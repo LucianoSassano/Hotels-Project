@@ -16,6 +16,8 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+
+    @OneToMany(mappedBy = "country")
     private List<Estate> estates;
 
 

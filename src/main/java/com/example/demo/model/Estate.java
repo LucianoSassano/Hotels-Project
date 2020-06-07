@@ -19,9 +19,11 @@ public class Estate {
     private Integer id;
     private String name;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
+
+    @OneToMany(mappedBy = "state")
     private List<City> cities;
 
 
