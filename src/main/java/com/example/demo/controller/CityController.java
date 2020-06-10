@@ -10,28 +10,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RequestMapping(path = "/cities")
 @RestController
 public class CityController {
 
     @Autowired
     private CityService cityService;
 
-    @GetMapping("/cities")
+    @GetMapping
     public ResponseEntity<List<City>> getAllCities(){
         return ResponseEntity.ok().body(this.cityService.listAllCities());
     }
 
-    @GetMapping("/cities/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<City> getCityById(@PathVariable Integer id){
         return ResponseEntity.ok().body(this.cityService.getCity(id));
     }
 
-    @PostMapping("/cities")
+    @PostMapping
     public ResponseEntity<City> createCity(@RequestBody City city){
         return ResponseEntity.ok().body(this.cityService.saveCity(city));
     }
 
-    @PutMapping("/cities/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<City> updateCity(@PathVariable Integer id , @RequestBody City city){
         return ResponseEntity.ok().body(this.cityService.updateCity(city));
     }
