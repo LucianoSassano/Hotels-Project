@@ -32,7 +32,7 @@ public class Hotel {
 
     private String email;
 
-    private Long phone;
+    private String phone;
 
     private Boolean status;
 

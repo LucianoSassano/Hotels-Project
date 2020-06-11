@@ -31,8 +31,8 @@ public class ReservationService {
 
         entity.setCreatedAt(LocalDateTime.now());                                                               // Adding extra data to the entity (which wasn't included in request)
         entity.setUpdatedAt(LocalDateTime.now());
-        entity.setHotel(hotelService.getById(reservationDtoInput.getHotelId()).orElse(new Hotel()));
         entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()).orElse(new Room()));
+        entity.setHotel((entity.getRoom().getHotel()));
 
         return new ReservationDtoOutput(reservationRepository.save(entity));                                           // Converted to Output DTO and returned
     }
@@ -62,7 +62,7 @@ public class ReservationService {
 
     public List<ReservationDtoOutput> getByRoomId(Long roomId) {
 
-        List<ReservationDtoOutput> reservations = reservationRepository.findAllByHotelId(roomId)
+        List<ReservationDtoOutput> reservations = reservationRepository.findAllByRoomId(roomId)
                 .stream()
                 .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
 
@@ -94,8 +94,8 @@ public class ReservationService {
         entity.setId(id);
 
         entity.setUpdatedAt(LocalDateTime.now());                                                 // Adding extra data to the entity (which wasn't included in request)
-        entity.setHotel(hotelService.getById(reservationDtoInput.getHotelId()).orElse(new Hotel()));
         entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()).orElse(new Room()));
+        entity.setHotel(entity.getRoom().getHotel());
         entity.setCreatedAt(reservationToUpdate.get().getCreatedAt());
         reservationRepository.save(entity);
 

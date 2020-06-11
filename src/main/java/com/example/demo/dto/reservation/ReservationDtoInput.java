@@ -15,7 +15,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class ReservationDtoInput {
 
-    private Long hotelId;
     private Long roomId;
     private String checkIn;
     private String checkOut;

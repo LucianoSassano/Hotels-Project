@@ -19,7 +19,7 @@ public class HotelDtoInput {
 
     private String email;
 
-    private Long phone;
+    private String phone;
 
     private Integer roomCapacity;
 

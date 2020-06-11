@@ -22,7 +22,7 @@ public class HotelDtoOutput {
 
     private String email;
 
-    private Long phone;
+    private String phone;
 
     private Integer roomCapacity;
 

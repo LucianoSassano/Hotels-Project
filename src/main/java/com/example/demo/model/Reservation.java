@@ -53,7 +53,6 @@ public class Reservation {
 
     public static Reservation buildReservationEntity(ReservationDtoInput reservationDtoInput) {
         return Reservation.builder()
-                .hotel(Hotel.builder().id(reservationDtoInput.getHotelId()).build())
                 .room(Room.builder().id(reservationDtoInput.getRoomId()).build())
                 .checkIn(LocalDate.parse(reservationDtoInput.getCheckIn(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))          //To do  Function in SharedUtils to validate the format
                 .checkOut(LocalDate.parse(reservationDtoInput.getCheckOut(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))        // To do Function in SharedUtils to validate the format
