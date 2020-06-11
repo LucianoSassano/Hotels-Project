@@ -1,33 +1,39 @@
 package com.example.demo.dto.reservation;
 
-import com.example.demo.model.Hotel;
+import com.example.demo.dto.hotel.HotelDtoOutput;
+import com.example.demo.dto.room.RoomDtoOutput;
 import com.example.demo.model.Reservation;
-import com.example.demo.model.Room;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationDto {
+public class ReservationDtoOutput {
 
-    private Hotel hotel;
-    private Room room;
-    private Date checkIn;           //Pending to fix date format
-    private Date checkOut;          //Pending to fix date format
+    private RoomDtoOutput room;
+
+    private LocalDate checkIn;
+
+    private LocalDate checkOut;
+
     private Double finalPrice;
+
     private Boolean isPaid;
 
-    public ReservationDto(Reservation reservation)
-    {
-        this.hotel=reservation.getHotel();
-        this.room=reservation.getRoom();
-        this.checkIn=reservation.getCheckIn();
-        this.checkOut=reservation.getCheckOut();
-        this.finalPrice=reservation.getFinalPrice();
-        this.isPaid=reservation.getIsPaid();
+
+    public ReservationDtoOutput(Reservation reservation) {
+        this.room = new RoomDtoOutput(reservation.getRoom());
+        this.checkIn = reservation.getCheckIn();
+        this.checkOut = reservation.getCheckOut();
+        this.finalPrice = reservation.getFinalPrice();
+        this.isPaid = reservation.getIsPaid();
     }
 }

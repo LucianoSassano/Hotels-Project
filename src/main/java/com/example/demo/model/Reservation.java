@@ -1,15 +1,17 @@
 package com.example.demo.model;
 
 
-import com.example.demo.dto.reservation.ReservationDto;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.demo.dto.reservation.ReservationDtoInput;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Entity
@@ -35,32 +37,28 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")                //Pending to fix date format
-    private Date checkIn;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")                //Pending to fix date format
 
-    private Date checkOut;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")                //Pending to fix date format
 
-    private Date createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")                //Pending to fix date format
+    private LocalDate checkIn;
 
-    private Date updatedAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")                //Pending to fix date format
+    private LocalDate checkOut;
 
-    private Date deletedAt;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     private Double finalPrice;
     private Boolean isPaid;
 
 
-    public static Reservation buildReservationEntity(ReservationDto reservationDto) {
+    public static Reservation buildReservationEntity(ReservationDtoInput reservationDtoInput) {
         return Reservation.builder()
-                .hotel(reservationDto.getHotel())
-                .room(reservationDto.getRoom())
-                .checkIn(reservationDto.getCheckIn())
-                .checkOut(reservationDto.getCheckOut())
-                .finalPrice(reservationDto.getFinalPrice())
-                .isPaid(reservationDto.getIsPaid())
+                .hotel(Hotel.builder().id(reservationDtoInput.getHotelId()).build())
+                .room(Room.builder().id(reservationDtoInput.getRoomId()).build())
+                .checkIn(LocalDate.parse(reservationDtoInput.getCheckIn(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))          //To do  Function in SharedUtils to validate the format
+                .checkOut(LocalDate.parse(reservationDtoInput.getCheckOut(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))        // To do Function in SharedUtils to validate the format
+                .finalPrice(reservationDtoInput.getFinalPrice())
+                .isPaid(reservationDtoInput.getIsPaid())
                 .build();
     }
 

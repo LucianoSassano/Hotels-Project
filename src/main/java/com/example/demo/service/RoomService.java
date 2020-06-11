@@ -47,11 +47,11 @@ public class RoomService {
 
     public List<RoomDtoOutput> getByHotelId(Long hotelId) {
 
-        List<RoomDtoOutput> roomDtoOutputList = roomRepository.findAllByHotelId(hotelId)
+        List<RoomDtoOutput> rooms = roomRepository.findAllByHotelId(hotelId)
                 .stream()
                 .map((room) -> new RoomDtoOutput(room)).collect(Collectors.toList());
 
-        return roomDtoOutputList;
+        return rooms;
     }
 
     public Optional<Room> delete(Long id) {

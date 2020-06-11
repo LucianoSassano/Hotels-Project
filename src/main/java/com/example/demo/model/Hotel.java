@@ -43,6 +43,10 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+
+
     public static Hotel buildHotelEntity(HotelDtoInput hotelDtoInput) {
         return Hotel.builder()
                 .name(hotelDtoInput.getName())

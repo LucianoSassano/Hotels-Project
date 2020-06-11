@@ -4,6 +4,7 @@ import com.example.demo.dto.room.RoomDtoInput;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "rooms")
@@ -21,7 +22,7 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bedding_id")
     private Bedding bedding;
 
@@ -29,9 +30,12 @@ public class Room {
 
     private Double dailyRate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
 
     public static Room buildRoomEntity(RoomDtoInput roomDtoInput) {
 
