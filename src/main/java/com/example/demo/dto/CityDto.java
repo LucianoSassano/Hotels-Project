@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CityDto {
 
+    private Integer id;
     private String name;
     private Integer zipCode;
     private Estate state;
 
     public CityDto(City city){
+
+        this.id = city.getId();
         this.name = city.getName();
         this.zipCode = city.getZipCode();
         this.state = city.getState();

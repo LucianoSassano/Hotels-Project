@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.EstateDto;
 import com.example.demo.model.Country;
 import com.example.demo.model.Estate;
 import com.example.demo.repository.StateRepository;
@@ -15,19 +16,19 @@ public class StateService {
     @Autowired
     private StateRepository stateRepository;
 
-    public List<Estate> listAllStates() {
+    public List<EstateDto> listAllStates() {
         return stateRepository.findAll();
     }
 
-    public Estate create(Estate state) {
+    public EstateDto create(EstateDto state) {
         return stateRepository.save(state);
     }
 
-    public Estate updateState(Estate state){
-        Optional <Estate> stateDb = this.stateRepository.findById(state.getId());
+    public EstateDto updateState(EstateDto state) throws Exception{
+        Optional <EstateDto> stateDb = this.stateRepository.findById(state.getId());
 
         if (stateDb.isPresent()){
-            Estate stateUpdate = stateDb.get();
+            EstateDto stateUpdate = stateDb.get();
             stateUpdate.setId(state.getId());
             stateUpdate.setName(state.getName());
             stateUpdate.setCities(state.getCities());
@@ -35,12 +36,18 @@ public class StateService {
             stateRepository.save(stateUpdate);
             return stateUpdate;
         }else{
-            throw new RuntimeException();
+            throw new Exception();
         }
     }
 
-    public Estate getById(Integer id) {
-        return stateRepository.findById(id).get();
+    public EstateDto getById(Integer id) throws Exception  {
+        Optional <EstateDto> stateDb = this.stateRepository.findById(id);
+
+        if(stateDb.isPresent()){
+            return this.stateRepository.findById(id).get();
+        }else{
+            throw new Exception();
+        }
     }
 
     public void delete(Integer id){

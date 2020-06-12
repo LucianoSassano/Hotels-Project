@@ -12,11 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class EstateDto {
 
+    private Integer id;
     private String name;
     private Country country;
     private List<City> cities;
 
     public EstateDto(Estate state) {
+        this.id = state.getId();
         this.name = state.getName();
         this.country = state.getCountry();
         this.cities = state.getCities();

@@ -1,7 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.City;
+import com.example.demo.dto.CityDto;
 import com.example.demo.repository.CityRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,32 +15,37 @@ public class CityService {
     @Autowired
     private CityRepository cityRepository;
 
-    public List<City> listAllCities() {
+    public List<CityDto> listAllCities() {
         return cityRepository.findAll();
     }
 
-    public City saveCity(City city) {
+    public CityDto saveCity(CityDto city) {
         return cityRepository.save(city);
     }
 
-    public City updateCity(City city){
-        Optional <City> cityDb = this.cityRepository.findById(city.getId());
+    public CityDto updateCity(CityDto city) throws Exception {
+        Optional<CityDto> cityDb = this.cityRepository.findById(city.getId());
 
-        if (cityDb.isPresent()){
-            City cityUpdate = cityDb.get();
+        if (cityDb.isPresent()) {
+            CityDto cityUpdate = cityDb.get();
             cityUpdate.setId(city.getId());
             cityUpdate.setName(city.getName());
             cityUpdate.setState(city.getState());
             cityUpdate.setZipCode(city.getZipCode());
             cityRepository.save(cityUpdate);
             return cityUpdate;
-        }else{
-            throw new RuntimeException();
+        } else {
+            throw new Exception();
         }
     }
 
-    public City getCity(Integer id) {
-        return cityRepository.findById(id).get();
+    public CityDto getCity(Integer id) throws Exception {
+        if (cityRepository.findById(id).get() != null){
+             return cityRepository.findById(id).get();
+        }
+        else{
+            throw new Exception();
+        }
     }
 
     public void delete(Integer id) {

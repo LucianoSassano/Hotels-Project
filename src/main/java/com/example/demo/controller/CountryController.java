@@ -1,46 +1,59 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CountryDto;
 import com.example.demo.model.Country;
 import com.example.demo.service.CountryService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Column;
+
 import java.util.List;
 
+@RequestMapping(path = "/countries")
 @RestController
 public class CountryController {
 
     @Autowired
     private CountryService countryService;
 
-    @GetMapping("/countries")
-    public ResponseEntity<List<Country>> getAllCountries() {
+    @GetMapping
+    public ResponseEntity<List<CountryDto>> getAllCountries() {
         return ResponseEntity.ok().body(countryService.listAllCountries());
     }
 
-    @GetMapping("/countries/{id}")
-    public ResponseEntity<Country> findCountryById(@PathVariable Integer id){
-        return ResponseEntity.ok().body(countryService.getById(id));
+    @GetMapping(path = "{id}")
+    public ResponseEntity findCountryById(@PathVariable Integer id) throws Exception {
+        try {
+            return ResponseEntity.ok().body(countryService.getById(id));
+        }catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no encontrado " + e);
+        }
     }
 
-    @PostMapping("/countries")
-    public ResponseEntity<Country> createCountry(@RequestBody Country country){
-        return ResponseEntity.ok().body(countryService.create(country));
-    }
-
-    @PutMapping("/countries/{id}")
-    public ResponseEntity<Country> updateCountry(@PathVariable Integer id , @RequestBody Country country){
-        country.setId(id);
-        return ResponseEntity.ok().body(this.countryService.updateCountry(country));
-    }
-
-    @DeleteMapping("countries/{id}")
-    public HttpStatus deleteCountry(@PathVariable Integer id){
-        this.countryService.deleteCountryById(id);
+    @PostMapping
+    public HttpStatus createCountry(@RequestBody CountryDto country){
+        countryService.create(country);
         return HttpStatus.OK;
+    }
+
+    @PutMapping(path = "{id}")
+    public ResponseEntity updateCountry(@PathVariable Integer id , @RequestBody Country country) throws Exception {
+        try {
+            country.setId(id);
+            return ResponseEntity.ok().body(this.countryService.updateCountry(country));
+        }catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no econtrado " + e);
+        }
+
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<HttpStatus> deleteCountry(@PathVariable Integer id){
+        this.countryService.deleteCountryById(id);
+        return ResponseEntity.ok().body(HttpStatus.OK);
     }
 
 
