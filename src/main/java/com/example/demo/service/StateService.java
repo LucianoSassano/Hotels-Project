@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.EstateDto;
-import com.example.demo.model.Country;
-import com.example.demo.model.Estate;
+
 import com.example.demo.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,10 @@ public class StateService {
         return stateRepository.save(state);
     }
 
-    public EstateDto updateState(EstateDto state) throws Exception{
-        Optional <EstateDto> stateDb = this.stateRepository.findById(state.getId());
+    public EstateDto updateState(EstateDto state) throws Exception {
+        Optional<EstateDto> stateDb = this.stateRepository.findById(state.getId());
 
-        if (stateDb.isPresent()){
+        if (stateDb.isPresent()) {
             EstateDto stateUpdate = stateDb.get();
             stateUpdate.setId(state.getId());
             stateUpdate.setName(state.getName());
@@ -35,22 +34,16 @@ public class StateService {
             stateUpdate.setCountry(state.getCountry());
             stateRepository.save(stateUpdate);
             return stateUpdate;
-        }else{
+        } else {
             throw new Exception();
         }
     }
 
-    public EstateDto getById(Integer id) throws Exception  {
-        Optional <EstateDto> stateDb = this.stateRepository.findById(id);
-
-        if(stateDb.isPresent()){
-            return this.stateRepository.findById(id).get();
-        }else{
-            throw new Exception();
-        }
+    public EstateDto getById(Integer id) {
+        return this.stateRepository.findById(id).get();
     }
 
-    public void delete(Integer id){
+    public void delete(Integer id) {
         stateRepository.deleteById(id);
     }
 

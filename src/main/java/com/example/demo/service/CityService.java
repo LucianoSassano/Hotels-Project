@@ -2,11 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CityDto;
 import com.example.demo.repository.CityRepository;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.Optional;
 
 @Service
@@ -39,13 +39,11 @@ public class CityService {
         }
     }
 
-    public CityDto getCity(Integer id) throws Exception {
-        if (cityRepository.findById(id).get() != null){
-             return cityRepository.findById(id).get();
-        }
-        else{
-            throw new Exception();
-        }
+    public CityDto getCity(Integer id) {
+
+        return cityRepository.findById(id).get();
+
+
     }
 
     public void delete(Integer id) {

@@ -20,32 +20,27 @@ public class CountryService {
         return countryRepository.findAll();
     }
 
-    public CountryDto create(CountryDto country){
+    public CountryDto create(CountryDto country) {
         return countryRepository.save(country);
     }
 
-    public CountryDto getById(Integer id) throws Exception {
-        Optional<CountryDto> countryDb = this.countryRepository.findById(id);
+    public CountryDto getById(Integer id) {
 
-        if(countryDb.isPresent()){
-            return this.countryRepository.findById(id).get();
-        }
-        else {
-            throw new Exception();
-        }
+        return this.countryRepository.findById(id).get();
+
     }
 
     public CountryDto updateCountry(Country country) throws Exception {
         Optional<CountryDto> countryDb = this.countryRepository.findById(country.getId());
 
-        if(countryDb.isPresent()){
+        if (countryDb.isPresent()) {
             CountryDto countryUpdate = countryDb.get();
             countryUpdate.setId(country.getId());
             countryUpdate.setName(country.getName());
             countryUpdate.setEstates(country.getEstates());
             countryRepository.save(countryUpdate);
             return countryUpdate;
-        }else{
+        } else {
             throw new Exception();
         }
     }

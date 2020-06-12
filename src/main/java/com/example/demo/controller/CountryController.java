@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequestMapping(path = "/countries")
 @RestController
@@ -28,7 +29,7 @@ public class CountryController {
     public ResponseEntity findCountryById(@PathVariable Integer id) throws Exception {
         try {
             return ResponseEntity.ok().body(countryService.getById(id));
-        }catch (NotFoundException e){
+        }catch (NoSuchElementException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no encontrado " + e);
         }
     }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequestMapping(path = "/states")
 @RestController
@@ -28,7 +29,7 @@ public class StateController {
     public ResponseEntity getStateById(@PathVariable Integer id) throws Exception {
         try{
             return ResponseEntity.ok().body(this.stateService.getById(id));
-        }catch (NotFoundException e){
+        }catch (NoSuchElementException e){
           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no econtrado " + e);
         }
     }
