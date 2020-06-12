@@ -3,6 +3,9 @@ package com.example.demo.model;
 
 import com.example.demo.dto.reservation.ReservationDtoInput;
 
+import com.example.demo.util.Constants;
+import com.example.demo.util.ErrorMessage;
+import com.example.demo.util.SharedUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,8 +57,8 @@ public class Reservation {
     public static Reservation buildReservationEntity(ReservationDtoInput reservationDtoInput) {
         return Reservation.builder()
                 .room(Room.builder().id(reservationDtoInput.getRoomId()).build())
-                .checkIn(LocalDate.parse(reservationDtoInput.getCheckIn(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))          //To do  Function in SharedUtils to validate the format
-                .checkOut(LocalDate.parse(reservationDtoInput.getCheckOut(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))        // To do Function in SharedUtils to validate the format
+                .checkIn(LocalDate.parse(SharedUtils.adjustLocalDate(reservationDtoInput.getCheckIn()), DateTimeFormatter.ofPattern(Constants.DATE_PATTERN)))
+                .checkOut(LocalDate.parse(SharedUtils.adjustLocalDate(reservationDtoInput.getCheckOut()), DateTimeFormatter.ofPattern(Constants.DATE_PATTERN)))
                 .finalPrice(reservationDtoInput.getFinalPrice())
                 .isPaid(reservationDtoInput.getIsPaid())
                 .build();

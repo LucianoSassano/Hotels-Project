@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping
-    public ResponseEntity add(@RequestBody HotelDtoInput hotelDtoInput) {
+    public ResponseEntity add(@Valid @RequestBody HotelDtoInput hotelDtoInput) {
 
         HotelDtoOutput newHotel = hotelService.add(hotelDtoInput);
 
@@ -39,33 +37,25 @@ public class HotelController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Optional<Hotel> selectedHotel = hotelService.getById(id);
-//    selectedHotel.orElseThrow(() -> new NotFoundException(Constants.ROOM_NOT_FOUND));   //to do
+        Hotel selectedHotel = hotelService.getById(id);
 
-        return ResponseEntity.ok(new HotelDtoOutput(selectedHotel.get()));
+        return ResponseEntity.ok(new HotelDtoOutput(selectedHotel));
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity replace(@PathVariable Long id, @RequestBody HotelDtoInput hotelDtoInput) {
+    public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody HotelDtoInput hotelDtoInput) {
 
         HotelDtoOutput updatedHotel = hotelService.replace(id, hotelDtoInput);
 
-        //to do  Implement exceptions for not found cases (on service layer)
         return ResponseEntity.ok(updatedHotel);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
 
-        Optional<Hotel> deleted = hotelService.delete(id);
-        if (!deleted.isPresent()) {
-            Map<String, String> result = new HashMap<String, String>();
-//        result.put("message", Constants.ROOM_NOT_FOUND);       // to do   Is this way ok or is it better handled with exceptions?
+        Hotel deleted = hotelService.delete(id);
 
-            return ResponseEntity.status(404).body(result);
-        }
-
-        return ResponseEntity.ok(new HotelDtoOutput(deleted.get()));
+        return ResponseEntity.ok(new HotelDtoOutput(deleted));
     }
 
 }

@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity add(@RequestBody RoomDtoInput roomDtoInput) {
+    public ResponseEntity add(@Valid @RequestBody RoomDtoInput roomDtoInput) {
 
         RoomDtoOutput newRoom = roomService.add(roomDtoInput);
 
@@ -39,10 +37,9 @@ public class RoomController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Optional<Room> selectedRoom = roomService.getById(id);
-//    selectedRoom.orElseThrow(() -> new NotFoundException(Constants.ROOM_NOT_FOUND));   //to do
+        Room selectedRoom = roomService.getById(id);
 
-        return ResponseEntity.ok(new RoomDtoOutput(selectedRoom.get()));
+        return ResponseEntity.ok(new RoomDtoOutput(selectedRoom));
     }
 
     @GetMapping(path = "/hotel/{id}")
@@ -53,26 +50,19 @@ public class RoomController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity replace(@PathVariable Long id, @RequestBody RoomDtoInput roomDtoInput) {
+    public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody RoomDtoInput roomDtoInput) {
 
         RoomDtoOutput updatedRoom = roomService.replace(id, roomDtoInput);
 
-        //to do  Implement exceptions for not found cases (on service layer)
         return ResponseEntity.ok(updatedRoom);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
 
-        Optional<Room> deleted = roomService.delete(id);
-        if (!deleted.isPresent()) {
-            Map<String, String> result = new HashMap<String, String>();
-//        result.put("message", Constants.ROOM_NOT_FOUND);       // to do   Is this way ok or is it better handled with exceptions?
+        Room deleted = roomService.delete(id);
 
-            return ResponseEntity.status(404).body(result);
-        }
-
-        return ResponseEntity.ok(new RoomDtoOutput(deleted.get()));
+        return ResponseEntity.ok(new RoomDtoOutput(deleted));
     }
 
 }

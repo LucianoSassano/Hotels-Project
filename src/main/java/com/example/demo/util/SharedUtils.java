@@ -1,10 +1,18 @@
 package com.example.demo.util;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class SharedUtils {
 
 
-//    public buildLocalDate(String )
+    public static String adjustLocalDate(String date) {
+        if (date.contains("/")) {
+            date = date.replace("/", "-");
+            return date;
+        }
+        if (date.contains(".")) {
+            date = date.replace(".", "-");
+
+            return date;
+        }
+        return date;
+    }
 }

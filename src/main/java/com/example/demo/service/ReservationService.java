@@ -2,19 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
-import com.example.demo.dto.room.RoomDtoOutput;
-import com.example.demo.model.Hotel;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Reservation;
-import com.example.demo.model.Room;
 import com.example.demo.repository.ReservationRepository;
+
+import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.GenerationType;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final HotelService hotelService;
+
     private final RoomService roomService;
 
     public ReservationDtoOutput add(ReservationDtoInput reservationDtoInput) {
@@ -31,7 +28,7 @@ public class ReservationService {
 
         entity.setCreatedAt(LocalDateTime.now());                                                               // Adding extra data to the entity (which wasn't included in request)
         entity.setUpdatedAt(LocalDateTime.now());
-        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()).orElse(new Room()));
+        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()));
         entity.setHotel((entity.getRoom().getHotel()));
 
         return new ReservationDtoOutput(reservationRepository.save(entity));                                           // Converted to Output DTO and returned
@@ -42,13 +39,15 @@ public class ReservationService {
                 .stream()
                 .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
 
+        if (reservationDtoOutputList.isEmpty())
+            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
+
         return reservationDtoOutputList;
     }
 
-    public Optional<Reservation> getById(Long id) {
+    public Reservation getById(Long id) {
 
-        return reservationRepository.findById(id);
-
+        return reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
     }
 
     public List<ReservationDtoOutput> getByHotelId(Long hotelId) {
@@ -56,6 +55,9 @@ public class ReservationService {
         List<ReservationDtoOutput> reservations = reservationRepository.findAllByHotelId(hotelId)
                 .stream()
                 .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
+
+        if (reservations.isEmpty())
+            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
 
         return reservations;
     }
@@ -66,37 +68,33 @@ public class ReservationService {
                 .stream()
                 .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
 
+        if (reservations.isEmpty())
+            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
+
         return reservations;
     }
 
 
-    public Optional<Reservation> delete(Long id) {
+    public Reservation delete(Long id) {
 
-        Optional<Reservation> reservationToDelete = reservationRepository.findById(id);           //Generate an optional with the reservation to delete
+        Reservation reservationToDelete = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+        reservationRepository.deleteById(id);
 
-        if (reservationToDelete.isPresent()) {                                        //If a reservation exists, we delete it and return it
-            reservationRepository.deleteById(id);
-
-            return reservationToDelete;
-        }
-
-        return reservationToDelete;                                                   //Else, just return the empty optional to be handled on controller layer
+        return reservationToDelete;
     }
+
 
     public ReservationDtoOutput replace(Long id, ReservationDtoInput reservationDtoInput) {
 
-        Optional<Reservation> reservationToUpdate = reservationRepository.findById(id);           //Generate an optional with the reservation to update
-
-//        reservationToUpdate.orElseThrow(()-> new NotFoundException)                 // To do. Is it ok to throw the exception on this layer ?
-
+        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
         Reservation entity = Reservation.buildReservationEntity(reservationDtoInput);             // Built entity and set the corresponding id before saving
         entity.setId(id);
 
         entity.setUpdatedAt(LocalDateTime.now());                                                 // Adding extra data to the entity (which wasn't included in request)
-        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()).orElse(new Room()));
+        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()));
         entity.setHotel(entity.getRoom().getHotel());
-        entity.setCreatedAt(reservationToUpdate.get().getCreatedAt());
+        entity.setCreatedAt(reservationToUpdate.getCreatedAt());
         reservationRepository.save(entity);
 
         return new ReservationDtoOutput(entity);

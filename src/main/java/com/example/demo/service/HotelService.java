@@ -2,13 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Hotel;
 import com.example.demo.repository.HotelRepository;
+import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,39 +29,34 @@ public class HotelService {
                 .stream()
                 .map((hotel) -> new HotelDtoOutput(hotel)).collect(Collectors.toList());
 
+        if (hotelDtoOutputList.isEmpty())
+            throw new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND);
+
         return hotelDtoOutputList;
     }
 
-    public Optional<Hotel> getById(Long id) {
+    public Hotel getById(Long id) {
 
-        return hotelRepository.findById(id);
+        return hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
 
     }
 
-    public Optional<Hotel> delete(Long id) {
+    public Hotel delete(Long id) {
 
-        Optional<Hotel> hotelToDelete = hotelRepository.findById(id);           //Generate an optional with the hotel to delete
+        Hotel hotelToDelete = hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+        hotelRepository.deleteById(id);
 
-        if (hotelToDelete.isPresent()) {                                        //If a hotel exists, we delete it and return it
-            hotelRepository.deleteById(id);
-
-            return hotelToDelete;
-        }
-
-        return hotelToDelete;                                                   //Else, just return the empty optional to be handled on controller layer
+        return hotelToDelete;
     }
 
     public HotelDtoOutput replace(Long id, HotelDtoInput hotelDtoInput) {
 
-        Optional<Hotel> hotelToUpdate = hotelRepository.findById(id);           //Generate an optional with the hotel to update
-
-//        hotelToUpdate.orElseThrow(()-> new NotFoundException)                 // To do. Is it ok to throw the exception on this layer ?
-
-        Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);             // Built entity and set the corresponding id before saving
+        hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+        Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
         updatedHotel.setId(id);
-        hotelRepository.save(updatedHotel);
 
-        return new HotelDtoOutput(updatedHotel);
+        return new HotelDtoOutput(hotelRepository.save(updatedHotel));
+
 
     }
 }
