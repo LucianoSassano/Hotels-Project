@@ -42,9 +42,7 @@ public class RoomService {
     }
 
     public Room getById(Long id) {
-
         return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
-
     }
 
     public List<RoomDtoOutput> getByHotelId(Long hotelId) {
@@ -65,7 +63,6 @@ public class RoomService {
         roomRepository.deleteById(id);
 
         return roomToDelete;
-
     }
 
     public RoomDtoOutput replace(Long id, RoomDtoInput roomDtoInput) {
@@ -78,6 +75,5 @@ public class RoomService {
         updatedRoom.setHotel(hotelService.getById(roomDtoInput.getHotelId()));
 
         return new RoomDtoOutput(roomRepository.save(updatedRoom));
-
     }
 }

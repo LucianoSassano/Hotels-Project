@@ -18,15 +18,13 @@ public class BeddingService {
     private final BeddingRepository beddingRepository;
 
     public BeddingDto add(BeddingDto beddingDto) {
-        Bedding result = beddingRepository.save(Bedding.buildBeddingEntity(beddingDto));
-
-        return new BeddingDto(result);
+        return new BeddingDto(beddingRepository.save(Bedding.buildBeddingEntity(beddingDto)));
     }
 
     public List<BeddingDto> getAll() {
         List<BeddingDto> beddingDtoList = beddingRepository.findAll()
                 .stream()
-                .map((bedding) -> new BeddingDto(bedding)).collect(Collectors.toList());
+                .map(BeddingDto::new).collect(Collectors.toList());
 
         if (beddingDtoList.isEmpty())
             throw new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND);
@@ -35,7 +33,6 @@ public class BeddingService {
     }
 
     public Bedding getById(Long id) {
-
         return beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
     }
 
@@ -50,7 +47,6 @@ public class BeddingService {
     public Bedding replace(Long id, BeddingDto beddingDto) {
 
         beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
-
         Bedding updatedBedding = Bedding.buildBeddingEntity(beddingDto);
         updatedBedding.setId(id);
 

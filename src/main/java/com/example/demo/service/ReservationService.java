@@ -98,6 +98,5 @@ public class ReservationService {
         reservationRepository.save(entity);
 
         return new ReservationDtoOutput(entity);
-
     }
 }

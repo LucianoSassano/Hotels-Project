@@ -19,9 +19,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
 
     public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
-        Hotel result = hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput));                                  //Create and save an Hotel based on the input DTO
-
-        return new HotelDtoOutput(result);                                                                       // Converted to Output DTO and returned
+        return new HotelDtoOutput(hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput)));                                                                       // Converted to Output DTO and returned
     }
 
     public List<HotelDtoOutput> getAll() {
@@ -36,9 +34,7 @@ public class HotelService {
     }
 
     public Hotel getById(Long id) {
-
         return hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
-
     }
 
     public Hotel delete(Long id) {
@@ -56,7 +52,5 @@ public class HotelService {
         updatedHotel.setId(id);
 
         return new HotelDtoOutput(hotelRepository.save(updatedHotel));
-
-
     }
 }
