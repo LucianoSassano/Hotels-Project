@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public static ResponseEntity badRequestException(MethodArgumentNotValidException ex) {
+    public static ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {

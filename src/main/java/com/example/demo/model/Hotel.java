@@ -30,6 +30,7 @@ public class Hotel {
 //    @JoinColumn(name = city_id)
 //    private City city;
 
+    @Column(unique=true)
     private String email;
 
     private String phone;

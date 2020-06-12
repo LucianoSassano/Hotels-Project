@@ -4,7 +4,6 @@ package com.example.demo.model;
 import com.example.demo.dto.reservation.ReservationDtoInput;
 
 import com.example.demo.util.Constants;
-import com.example.demo.util.ErrorMessage;
 import com.example.demo.util.SharedUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +40,6 @@ public class Reservation {
     @JoinColumn(name = "room_id")
     private Room room;
 
-
     private LocalDate checkIn;
 
     private LocalDate checkOut;
@@ -51,6 +49,7 @@ public class Reservation {
     private LocalDateTime updatedAt;
 
     private Double finalPrice;
+
     private Boolean isPaid;
 
 
