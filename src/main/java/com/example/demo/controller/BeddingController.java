@@ -20,39 +20,27 @@ public class BeddingController {
 
     @PostMapping
     public ResponseEntity add(@Valid @RequestBody BeddingDto beddingDto) {
-        BeddingDto newBedding = beddingService.add(beddingDto);
-
-        return ResponseEntity.ok(newBedding);
+        return ResponseEntity.ok(beddingService.add(beddingDto));
     }
 
     @GetMapping
     public ResponseEntity selectAll() {
-        List<BeddingDto> beddings = beddingService.getAll();
-
-        return ResponseEntity.ok(beddings);
+        return ResponseEntity.ok(beddingService.getAll());
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Bedding selectedBedding = beddingService.getById(id);
-
-        return ResponseEntity.ok(new BeddingDto(selectedBedding));
+        return ResponseEntity.ok(new BeddingDto(beddingService.getById(id)));
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody BeddingDto beddingDto) {
-
-        Bedding updated = beddingService.replace(id, beddingDto);
-
-        return ResponseEntity.ok(new BeddingDto(updated));
+        return ResponseEntity.ok(new BeddingDto(beddingService.replace(id, beddingDto)));
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-
-        Bedding deleted = beddingService.delete(id);
-
-        return ResponseEntity.ok(new BeddingDto(deleted));
+        return ResponseEntity.ok(new BeddingDto(beddingService.delete(id)));
     }
 
 }

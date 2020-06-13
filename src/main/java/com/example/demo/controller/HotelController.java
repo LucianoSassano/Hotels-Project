@@ -22,40 +22,27 @@ public class HotelController {
 
     @PostMapping
     public ResponseEntity add(@Valid @RequestBody HotelDtoInput hotelDtoInput) {
-
-        HotelDtoOutput newHotel = hotelService.add(hotelDtoInput);
-
-        return ResponseEntity.ok(newHotel);
+        return ResponseEntity.ok(hotelService.add(hotelDtoInput));
     }
 
     @GetMapping
     public ResponseEntity selectAll() {
-        List<HotelDtoOutput> hotels = hotelService.getAll();
-
-        return ResponseEntity.ok(hotels);
+        return ResponseEntity.ok(hotelService.getAll());
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Hotel selectedHotel = hotelService.getById(id);
-
-        return ResponseEntity.ok(new HotelDtoOutput(selectedHotel));
+        return ResponseEntity.ok(new HotelDtoOutput(hotelService.getById(id)));
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody HotelDtoInput hotelDtoInput) {
-
-        HotelDtoOutput updatedHotel = hotelService.replace(id, hotelDtoInput);
-
-        return ResponseEntity.ok(updatedHotel);
+        return ResponseEntity.ok(hotelService.replace(id, hotelDtoInput));
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-
-        Hotel deleted = hotelService.delete(id);
-
-        return ResponseEntity.ok(new HotelDtoOutput(deleted));
+        return ResponseEntity.ok(new HotelDtoOutput(hotelService.delete(id)));
     }
 
 }

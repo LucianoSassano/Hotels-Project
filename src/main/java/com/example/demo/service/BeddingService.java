@@ -40,8 +40,8 @@ public class BeddingService {
 
         Bedding beddingToDelete = beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
         beddingRepository.deleteById(id);
-        return beddingToDelete;
 
+        return beddingToDelete;
     }
 
     public Bedding replace(Long id, BeddingDto beddingDto) {
@@ -52,6 +52,4 @@ public class BeddingService {
 
         return beddingRepository.save(updatedBedding);
     }
-
-
 }

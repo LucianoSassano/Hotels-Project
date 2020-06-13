@@ -46,7 +46,6 @@ public class ReservationService {
     }
 
     public Reservation getById(Long id) {
-
         return reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
     }
 

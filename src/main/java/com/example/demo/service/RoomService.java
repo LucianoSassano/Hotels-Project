@@ -22,6 +22,7 @@ public class RoomService {
 
 
     public RoomDtoOutput add(RoomDtoInput roomDtoInput) {
+
         Room result = Room.buildRoomEntity(roomDtoInput);                                  //Create a Room based on the input DTO
 
         result.setBedding(beddingService.getById(roomDtoInput.getBeddingId()));         //The DTO only provides the id of the bedding, to do the insert. This line adds also the bedding data to our Room obj
@@ -31,6 +32,7 @@ public class RoomService {
     }
 
     public List<RoomDtoOutput> getAll() {
+
         List<RoomDtoOutput> roomDtoOutputList = roomRepository.findAll()
                 .stream()
                 .map((room) -> new RoomDtoOutput(room)).collect(Collectors.toList());

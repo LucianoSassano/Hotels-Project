@@ -22,54 +22,37 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity add(@Valid @RequestBody ReservationDtoInput reservationDtoInput) {
-
-        ReservationDtoOutput newReservation = reservationService.add(reservationDtoInput);
-
-        return ResponseEntity.ok(newReservation);
+        return ResponseEntity.ok(reservationService.add(reservationDtoInput));
     }
 
     @GetMapping
     public ResponseEntity selectAll() {
-        List<ReservationDtoOutput> reservations = reservationService.getAll();
-
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(reservationService.getAll());
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Reservation selectedReservation = reservationService.getById(id);
-
-        return ResponseEntity.ok(new ReservationDtoOutput(selectedReservation));
+        return ResponseEntity.ok(new ReservationDtoOutput(reservationService.getById(id)));
     }
 
     @GetMapping(path = "/hotel/{id}")
     public ResponseEntity selectByHotelId(@PathVariable Long id) {
-        List<ReservationDtoOutput> reservations = reservationService.getByHotelId(id);
-
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(reservationService.getByHotelId(id));
     }
 
     @GetMapping(path = "/room/{id}")
     public ResponseEntity selectByRoomId(@PathVariable Long id) {
-        List<ReservationDtoOutput> reservations = reservationService.getByRoomId(id);
-
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok(reservationService.getByRoomId(id));
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody ReservationDtoInput reservationDtoInput) {
-
-        ReservationDtoOutput updatedReservation = reservationService.replace(id, reservationDtoInput);
-
-        return ResponseEntity.ok(updatedReservation);
+        return ResponseEntity.ok(reservationService.replace(id, reservationDtoInput));
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-
-        Reservation deleted = reservationService.delete(id);
-
-        return ResponseEntity.ok(new ReservationDtoOutput(deleted));
+        return ResponseEntity.ok(new ReservationDtoOutput(reservationService.delete(id)));
     }
 
 }

@@ -22,47 +22,32 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity add(@Valid @RequestBody RoomDtoInput roomDtoInput) {
-
-        RoomDtoOutput newRoom = roomService.add(roomDtoInput);
-
-        return ResponseEntity.ok(newRoom);
+        return ResponseEntity.ok(roomService.add(roomDtoInput));
     }
 
     @GetMapping
     public ResponseEntity selectAll() {
-        List<RoomDtoOutput> rooms = roomService.getAll();
-
-        return ResponseEntity.ok(rooms);
+        return ResponseEntity.ok(roomService.getAll());
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity selectById(@PathVariable Long id) {
-        Room selectedRoom = roomService.getById(id);
-
-        return ResponseEntity.ok(new RoomDtoOutput(selectedRoom));
+        return ResponseEntity.ok(new RoomDtoOutput(roomService.getById(id)));
     }
 
     @GetMapping(path = "/hotel/{id}")
     public ResponseEntity selectByHotelId(@PathVariable Long id) {
-        List<RoomDtoOutput> rooms = roomService.getByHotelId(id);
-
-        return ResponseEntity.ok(rooms);
+        return ResponseEntity.ok(roomService.getByHotelId(id));
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody RoomDtoInput roomDtoInput) {
-
-        RoomDtoOutput updatedRoom = roomService.replace(id, roomDtoInput);
-
-        return ResponseEntity.ok(updatedRoom);
+        return ResponseEntity.ok(roomService.replace(id, roomDtoInput));
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-
-        Room deleted = roomService.delete(id);
-
-        return ResponseEntity.ok(new RoomDtoOutput(deleted));
+        return ResponseEntity.ok(new RoomDtoOutput(roomService.delete(id)));
     }
 
 }

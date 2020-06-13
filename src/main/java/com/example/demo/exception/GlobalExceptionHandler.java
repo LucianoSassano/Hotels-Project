@@ -14,7 +14,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public static ResponseEntity notFoundException(NotFoundException ex) {
+    public static ResponseEntity<?> notFoundException(NotFoundException ex) {
 
         Map<String, String> error = new HashMap<>();
 
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public static ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public static ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
