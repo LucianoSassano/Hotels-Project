@@ -15,7 +15,7 @@ public class CityService {
     @Autowired
     private CityRepository cityRepository;
 
-    public List<CityDto> listAllCities() {
+    public List<CityDto> listAllCities(){
         return cityRepository.findAll();
     }
 

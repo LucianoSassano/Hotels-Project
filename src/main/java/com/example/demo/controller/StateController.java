@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.EstateDto;
-import com.example.demo.model.Estate;
 import com.example.demo.service.StateService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +20,30 @@ public class StateController {
 
 
     @GetMapping
-    public ResponseEntity<List<EstateDto>> getAllStates() {
-        return ResponseEntity.ok().body(this.stateService.listAllStates());
+    public ResponseEntity getAllStates() throws Exception {
+        try {
+            return ResponseEntity.ok().body(this.stateService.listAllStates());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found" + e);
+        }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity getStateById(@PathVariable Integer id) throws Exception {
-        try{
+        try {
             return ResponseEntity.ok().body(this.stateService.getById(id));
-        }catch (NoSuchElementException e){
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no econtrado " + e);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
         }
     }
 
     @PostMapping
-    public ResponseEntity<EstateDto> createState(@RequestBody EstateDto state) {
-        return ResponseEntity.ok().body(this.stateService.create(state));
+    public ResponseEntity createState(@RequestBody EstateDto state) throws Exception {
+        try {
+            return ResponseEntity.ok().body(this.stateService.create(state));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Creation not implemented " + e);
+        }
     }
 
     @PutMapping(path = "/{id}")
@@ -44,15 +51,19 @@ public class StateController {
         try {
             state.setId(id);
             return ResponseEntity.ok().body(this.stateService.updateState(state));
-        }catch (NotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no econtrado " + e);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
         }
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<HttpStatus> deleteState(@PathVariable Integer id){
-        this.stateService.delete(id);
-        return ResponseEntity.ok().body(HttpStatus.OK);
+    public ResponseEntity deleteState(@PathVariable Integer id) throws Exception {
+        try {
+            this.stateService.delete(id);
+            return ResponseEntity.ok().body(HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Delete not implemented " + e);
+        }
     }
 
 

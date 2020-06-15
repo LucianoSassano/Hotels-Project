@@ -21,43 +21,54 @@ public class CountryController {
     private CountryService countryService;
 
     @GetMapping
-    public ResponseEntity<List<CountryDto>> getAllCountries() {
-        return ResponseEntity.ok().body(countryService.listAllCountries());
+    public ResponseEntity getAllCountries() throws Exception {
+        try {
+            return ResponseEntity.ok().body(countryService.listAllCountries());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
+        }
     }
 
     @GetMapping(path = "{id}")
     public ResponseEntity findCountryById(@PathVariable Integer id) throws Exception {
         try {
             return ResponseEntity.ok().body(countryService.getById(id));
-        }catch (NoSuchElementException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no encontrado " + e);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
         }
     }
 
     @PostMapping
-    public HttpStatus createCountry(@RequestBody CountryDto country){
-        countryService.create(country);
-        return HttpStatus.OK;
+    public ResponseEntity createCountry(@RequestBody CountryDto country) throws Exception {
+        try {
+            countryService.create(country);
+            return ResponseEntity.status(HttpStatus.OK).body(country);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Create not implemented " + e);
+
+        }
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity updateCountry(@PathVariable Integer id , @RequestBody Country country) throws Exception {
+    public ResponseEntity updateCountry(@PathVariable Integer id, @RequestBody Country country) throws Exception {
         try {
             country.setId(id);
             return ResponseEntity.ok().body(this.countryService.updateCountry(country));
-        }catch (NotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recurso no econtrado " + e);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
         }
 
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<HttpStatus> deleteCountry(@PathVariable Integer id){
-        this.countryService.deleteCountryById(id);
-        return ResponseEntity.ok().body(HttpStatus.OK);
+    public ResponseEntity deleteCountry(@PathVariable Integer id) throws Exception {
+        try {
+            this.countryService.deleteCountryById(id);
+            return ResponseEntity.ok().body(HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Delete not implemented " + e);
+        }
     }
-
-
 
 
 }
