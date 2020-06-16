@@ -29,11 +29,7 @@ public class  UserController {
     //This endpoint return a specific user information,searching by id
     @GetMapping ("/{id}")
     public ResponseEntity getById(@PathVariable("id") Long id){
-        try {
             return ResponseEntity.ok().body(userService.findById(id));
-        } catch (Exception e) {
-           return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     //This endpoint return a all cards registered about specific user.
@@ -51,32 +47,18 @@ public class  UserController {
     //This endpoint register a new card for a specific user.
     @PostMapping("/{dni}/card")
     public ResponseEntity insert(@PathVariable("dni")Integer dni,@RequestBody @Valid CardDTO card){
-        try {
             return ResponseEntity.ok().body(userService.insertCard(card,dni));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
     }
 
     //This enpoint allow update a specific user.
     @PutMapping("")
     public ResponseEntity updateByDni(@RequestBody @Valid UserDTO toUpdate,Integer dni){
-        try {
             return ResponseEntity.ok().body(userService.update(toUpdate,dni));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
     }
 
     //This endpoint make a soft-delete for a specific user, identify by dni.
     @DeleteMapping("/{dni}")
     public void delete(@PathVariable("dni")Integer dni){
-        try {
             userService.delete(dni);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -50,7 +50,7 @@ public class UserService {
                      .map(user->{
                          User updated = User.generateInstanceFromDTO(userToUpdate);
                          updated.setId(user.getId());
-                         updated.setDeleteAt(false);
+                         updated.setIsDeleted(false);
                          userRepository.save(updated);
                          return UserDTO.generateInstanceFromUser(updated);
                      })

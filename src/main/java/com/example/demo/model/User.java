@@ -47,11 +47,12 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    private Boolean deleteAt;
+    //modify for deleted.
+    private Boolean isDeleted;
     @PrePersist
     void preInsert() {
-        if (this.deleteAt == null)
-            this.deleteAt = false;
+        if (this.isDeleted == null)
+            this.isDeleted = false;
     }
     private Role rol;
 
