@@ -19,27 +19,27 @@ public class BeddingController {
     private final BeddingService beddingService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody BeddingDto beddingDto) {
+    public ResponseEntity<?> add(@Valid @RequestBody BeddingDto beddingDto) {
         return ResponseEntity.ok(beddingService.add(beddingDto));
     }
 
     @GetMapping
-    public ResponseEntity selectAll() {
+    public ResponseEntity<?>  selectAll() {
         return ResponseEntity.ok(beddingService.getAll());
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity selectById(@PathVariable Long id) {
+    public ResponseEntity<?>  selectById(@PathVariable Long id) {
         return ResponseEntity.ok(new BeddingDto(beddingService.getById(id)));
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity replace(@PathVariable Long id, @Valid @RequestBody BeddingDto beddingDto) {
+    public ResponseEntity<?>  replace(@PathVariable Long id, @Valid @RequestBody BeddingDto beddingDto) {
         return ResponseEntity.ok(new BeddingDto(beddingService.replace(id, beddingDto)));
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<?>  delete(@PathVariable Long id) {
         return ResponseEntity.ok(new BeddingDto(beddingService.delete(id)));
     }
 

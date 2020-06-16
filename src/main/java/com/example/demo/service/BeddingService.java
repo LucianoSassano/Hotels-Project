@@ -22,14 +22,10 @@ public class BeddingService {
     }
 
     public List<BeddingDto> getAll() {
-        List<BeddingDto> beddingDtoList = beddingRepository.findAll()
+
+        return beddingRepository.findAll()
                 .stream()
                 .map(BeddingDto::new).collect(Collectors.toList());
-
-        if (beddingDtoList.isEmpty())
-            throw new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND);
-
-        return beddingDtoList;
     }
 
     public Bedding getById(Long id) {

@@ -23,14 +23,10 @@ public class HotelService {
     }
 
     public List<HotelDtoOutput> getAll() {
-        List<HotelDtoOutput> hotelDtoOutputList = hotelRepository.findAll()
+
+        return hotelRepository.findAll()
                 .stream()
-                .map((hotel) -> new HotelDtoOutput(hotel)).collect(Collectors.toList());
-
-        if (hotelDtoOutputList.isEmpty())
-            throw new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND);
-
-        return hotelDtoOutputList;
+                .map(HotelDtoOutput::new).collect(Collectors.toList());
     }
 
     public Hotel getById(Long id) {

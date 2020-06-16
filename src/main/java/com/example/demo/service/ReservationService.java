@@ -35,14 +35,10 @@ public class ReservationService {
     }
 
     public List<ReservationDtoOutput> getAll() {
-        List<ReservationDtoOutput> reservationDtoOutputList = reservationRepository.findAll()
+
+        return reservationRepository.findAll()
                 .stream()
-                .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
-
-        if (reservationDtoOutputList.isEmpty())
-            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
-
-        return reservationDtoOutputList;
+                .map(ReservationDtoOutput::new).collect(Collectors.toList());
     }
 
     public Reservation getById(Long id) {
@@ -51,26 +47,16 @@ public class ReservationService {
 
     public List<ReservationDtoOutput> getByHotelId(Long hotelId) {
 
-        List<ReservationDtoOutput> reservations = reservationRepository.findAllByHotelId(hotelId)
+        return reservationRepository.findAllByHotelId(hotelId)
                 .stream()
-                .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
-
-        if (reservations.isEmpty())
-            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
-
-        return reservations;
+                .map(ReservationDtoOutput::new).collect(Collectors.toList());
     }
 
     public List<ReservationDtoOutput> getByRoomId(Long roomId) {
 
-        List<ReservationDtoOutput> reservations = reservationRepository.findAllByRoomId(roomId)
+        return reservationRepository.findAllByRoomId(roomId)
                 .stream()
-                .map((reservation) -> new ReservationDtoOutput(reservation)).collect(Collectors.toList());
-
-        if (reservations.isEmpty())
-            throw new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND);
-
-        return reservations;
+                .map(ReservationDtoOutput::new).collect(Collectors.toList());
     }
 
 

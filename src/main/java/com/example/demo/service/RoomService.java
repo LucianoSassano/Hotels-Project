@@ -33,14 +33,9 @@ public class RoomService {
 
     public List<RoomDtoOutput> getAll() {
 
-        List<RoomDtoOutput> roomDtoOutputList = roomRepository.findAll()
+        return roomRepository.findAll()
                 .stream()
-                .map((room) -> new RoomDtoOutput(room)).collect(Collectors.toList());
-
-        if (roomDtoOutputList.isEmpty())
-            throw new NotFoundException(ErrorMessage.ROOM_NOT_FOUND);
-
-        return roomDtoOutputList;
+                .map(RoomDtoOutput::new).collect(Collectors.toList());
     }
 
     public Room getById(Long id) {
@@ -49,14 +44,9 @@ public class RoomService {
 
     public List<RoomDtoOutput> getByHotelId(Long hotelId) {
 
-        List<RoomDtoOutput> rooms = roomRepository.findAllByHotelId(hotelId)
+        return roomRepository.findAllByHotelId(hotelId)
                 .stream()
-                .map((room) -> new RoomDtoOutput(room)).collect(Collectors.toList());
-
-        if (rooms.isEmpty())
-            throw new NotFoundException(ErrorMessage.ROOM_NOT_FOUND);
-
-        return rooms;
+                .map(RoomDtoOutput::new).collect(Collectors.toList());
     }
 
     public Room delete(Long id) {
