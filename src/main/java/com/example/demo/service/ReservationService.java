@@ -3,7 +3,9 @@ package com.example.demo.service;
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.model.Hotel;
 import com.example.demo.model.Reservation;
+import com.example.demo.model.Room;
 import com.example.demo.repository.ReservationRepository;
 
 import com.example.demo.util.ErrorMessage;
@@ -24,15 +26,19 @@ public class ReservationService {
 
     public ReservationDtoOutput add(ReservationDtoInput reservationDtoInput) {
 
-        Reservation entity = Reservation.buildReservationEntity(reservationDtoInput);                          //Create and save an Reservation based on the input DTO
+        Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
+        Room room = roomService.getById(reservationDtoInput.getRoomId());
+        Hotel hotel = room.getHotel();
+        final LocalDateTime now = LocalDateTime.now();
+        // Adding extra data to the entity (which wasn't included in request)
+        reservation.setCreatedAt(now);
+        reservation.setUpdatedAt(now);
+        reservation.setRoom(room);
+        reservation.setHotel(hotel);
 
-        entity.setCreatedAt(LocalDateTime.now());                                                               // Adding extra data to the entity (which wasn't included in request)
-        entity.setUpdatedAt(LocalDateTime.now());
-        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()));
-        entity.setHotel((entity.getRoom().getHotel()));
-
-        return new ReservationDtoOutput(reservationRepository.save(entity));                                           // Converted to Output DTO and returned
+        return new ReservationDtoOutput(reservationRepository.save(reservation));
     }
+
 
     public List<ReservationDtoOutput> getAll() {
 
@@ -73,15 +79,19 @@ public class ReservationService {
 
         Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
-        Reservation entity = Reservation.buildReservationEntity(reservationDtoInput);             // Built entity and set the corresponding id before saving
-        entity.setId(id);
+        Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
+        LocalDateTime createdAt = reservationToUpdate.getCreatedAt();
+        Room room = roomService.getById(reservationDtoInput.getRoomId());
+        Hotel hotel = room.getHotel();
+        // Adding extra data to the entity (which wasn't included in request)
+        reservation.setId(id);
+        reservation.setCreatedAt(createdAt);
+        reservation.setUpdatedAt(LocalDateTime.now());
+        reservation.setRoom(room);
+        reservation.setHotel(hotel);
 
-        entity.setUpdatedAt(LocalDateTime.now());                                                 // Adding extra data to the entity (which wasn't included in request)
-        entity.setRoom(roomService.getById(reservationDtoInput.getRoomId()));
-        entity.setHotel(entity.getRoom().getHotel());
-        entity.setCreatedAt(reservationToUpdate.getCreatedAt());
-        reservationRepository.save(entity);
+        reservationRepository.save(reservation);
 
-        return new ReservationDtoOutput(entity);
+        return new ReservationDtoOutput(reservation);
     }
 }
