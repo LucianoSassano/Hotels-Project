@@ -1,16 +1,14 @@
 package com.example.demo.controller;
 
-
 import com.example.demo.dto.room.RoomDtoInput;
 import com.example.demo.dto.room.RoomDtoOutput;
-import com.example.demo.model.Room;
+import com.example.demo.dto.room.UncheckedRoom;
 import com.example.demo.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -49,5 +47,11 @@ public class RoomController {
     public ResponseEntity delete(@PathVariable Long id) {
         return ResponseEntity.ok(new RoomDtoOutput(roomService.delete(id)));
     }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity partialUpdate(@PathVariable Long id, @Valid @RequestBody UncheckedRoom uncheckedRoom) {
+        return ResponseEntity.ok(roomService.partialUpdate(id, uncheckedRoom));
+    }
+
 
 }

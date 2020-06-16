@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Bedding;
 import com.example.demo.repository.BeddingRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,4 +54,14 @@ public class BeddingService {
 
         return beddingRepository.save(updatedBedding);
     }
+
+    public BeddingDto partialUpdate(Long id, UncheckedBedding uncheckedBedding) {
+        Bedding beddingToUpdate = beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
+
+        Optional.ofNullable(uncheckedBedding.getDescription()).ifPresent(beddingToUpdate::setDescription);
+        Optional.ofNullable(uncheckedBedding.getMaxCapacity()).ifPresent(beddingToUpdate::setMaxCapacity);
+
+        return new BeddingDto(beddingRepository.save(beddingToUpdate));
+    }
+
 }

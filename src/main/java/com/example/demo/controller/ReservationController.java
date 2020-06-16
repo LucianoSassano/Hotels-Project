@@ -1,16 +1,14 @@
 package com.example.demo.controller;
 
-
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
-import com.example.demo.model.Reservation;
+import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -54,5 +52,11 @@ public class ReservationController {
     public ResponseEntity delete(@PathVariable Long id) {
         return ResponseEntity.ok(new ReservationDtoOutput(reservationService.delete(id)));
     }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity partialUpdate(@PathVariable Long id, @Valid @RequestBody UncheckedReservation uncheckedReservation) {
+        return ResponseEntity.ok(reservationService.partialUpdate(id, uncheckedReservation));
+    }
+
 
 }

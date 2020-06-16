@@ -1,14 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.bedding.BeddingDto;
-import com.example.demo.model.Bedding;
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.service.BeddingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -41,6 +40,11 @@ public class BeddingController {
     @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return ResponseEntity.ok(new BeddingDto(beddingService.delete(id)));
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity partialUpdate(@PathVariable Long id, @Valid @RequestBody UncheckedBedding uncheckedBedding) {
+        return ResponseEntity.ok(beddingService.partialUpdate(id, uncheckedBedding));
     }
 
 }

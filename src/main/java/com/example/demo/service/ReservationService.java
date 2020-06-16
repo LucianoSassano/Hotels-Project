@@ -2,16 +2,22 @@ package com.example.demo.service;
 
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
+import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Reservation;
 import com.example.demo.repository.ReservationRepository;
 
+import com.example.demo.util.Constants;
 import com.example.demo.util.ErrorMessage;
+import com.example.demo.util.SharedUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,4 +104,25 @@ public class ReservationService {
 
         return new ReservationDtoOutput(entity);
     }
+
+    public ReservationDtoOutput partialUpdate(Long id, UncheckedReservation uncheckedReservation) {
+        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+
+        reservationToUpdate.setUpdatedAt(LocalDateTime.now());
+
+        Optional.ofNullable(uncheckedReservation.getRoomId())
+                .ifPresent(roomId -> {
+                    reservationToUpdate.setRoom(roomService.getById(roomId));
+                    reservationToUpdate.setHotel(reservationToUpdate.getRoom().getHotel());
+                });
+//      Optional.ofNullable(uncheckedReservation.getUserId()).ifPresent(userId->reservationToUpdate.setUser(userService.getById(userId)));
+        Optional.ofNullable(uncheckedReservation.getCheckIn()).ifPresent(checkin -> reservationToUpdate.setCheckIn(LocalDate.parse(SharedUtils.adjustLocalDate(checkin), DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
+        Optional.ofNullable(uncheckedReservation.getCheckOut()).ifPresent(checkOut -> reservationToUpdate.setCheckOut(LocalDate.parse(SharedUtils.adjustLocalDate(checkOut), DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
+        Optional.ofNullable(uncheckedReservation.getFinalPrice()).ifPresent(reservationToUpdate::setFinalPrice);
+        Optional.ofNullable(uncheckedReservation.getIsPaid()).ifPresent(reservationToUpdate::setIsPaid);
+
+        return new ReservationDtoOutput(reservationRepository.save(reservationToUpdate));
+    }
+
+
 }

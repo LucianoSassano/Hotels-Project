@@ -20,6 +20,8 @@ public class ReservationDtoOutput {
 
     private RoomDtoOutput room;
 
+//    private UserDtoOutput user;
+
     private LocalDate checkIn;
 
     private LocalDate checkOut;
@@ -31,6 +33,7 @@ public class ReservationDtoOutput {
 
     public ReservationDtoOutput(Reservation reservation) {
         this.room = new RoomDtoOutput(reservation.getRoom());
+//        this.user = new UserDtoOutput(reservation.getUser());
         this.checkIn = reservation.getCheckIn();
         this.checkOut = reservation.getCheckOut();
         this.finalPrice = reservation.getFinalPrice();
