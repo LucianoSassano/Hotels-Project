@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class CardsUtils {
 
-
     public static Set<CreditCard> setCardsDTOtoEntity (Set<CardDTO>listDtoCard){
         return  listDtoCard.stream()
                 .map(card->CreditCard.generateInstanceFromDTO(card))

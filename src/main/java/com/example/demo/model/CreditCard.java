@@ -1,4 +1,3 @@
-
 package com.example.demo.model;
 import com.example.demo.dto.CardDTO;
 import com.sun.istack.NotNull;
@@ -6,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -16,53 +18,38 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Table(name = "credit_cards")
+@SQLDelete(sql = "UPDATE credit_cards SET delete_at = true WHERE id=?")
+@Where(clause = "delete_at = false")
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    private Long user_id;
-    private Integer number;
 
     @NotNull
+    private Long user_id;
+
+    @Column(unique = true,updatable = false)
+    private Long number;
+
+    @NotNull
+    @Column(updatable = false)
+    @CreationTimestamp
     private LocalDateTime createAt;
 
     @NotNull
+    @UpdateTimestamp
     private LocalDateTime updateAt;
 
-    @NotNull
-    private LocalDateTime deleteAt;
+    private Boolean deleteAt;
+    @PrePersist
+    void preInsert() {
+        if (this.deleteAt == null)
+            this.deleteAt = false;
+    }
 
     public static CreditCard generateInstanceFromDTO(CardDTO cardDto){
         return  CreditCard.builder()
-                .user_id(cardDto.getUser_id())
                 .number(cardDto.getNumber())
                 .build();
     }
 }
-
-
-
-
-
-/*package com.example.demo.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreditCard {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
-    private Integer number;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private User users;
-
-}*/

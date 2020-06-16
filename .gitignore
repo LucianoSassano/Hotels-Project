@@ -24,7 +24,7 @@ buildSrc/build
 /framework-bom/build
 /integration-tests/build
 /src/asciidoc/build
-/src/main/resources/application.properties
+/src/main/resources/application-dev.properties
 target/
 
 # Eclipse artifacts, including WTP generated manifests
