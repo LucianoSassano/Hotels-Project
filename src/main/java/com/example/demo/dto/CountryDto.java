@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import com.example.demo.model.Country;
 import com.example.demo.model.Estate;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CountryDto {
 
     private Integer id;
@@ -21,7 +23,5 @@ public class CountryDto {
         this.states = country.getEstates();
     }
 
-    public void setEstates(List<Estate> estates) {
-        this.states = estates;
-    }
+    
 }
