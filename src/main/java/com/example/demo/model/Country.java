@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 
+import com.example.demo.dto.CountryDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +13,8 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
+@Builder
 public class Country {
 
     @Id
@@ -21,6 +24,14 @@ public class Country {
 
     @OneToMany(mappedBy = "country")
     private List<Estate> estates;
+
+    public static Country buildCountryEntity(CountryDto countryDto) {
+        return Country.builder()
+                .id(countryDto.getId())
+                .name(countryDto.getName())
+                .estates(countryDto.getStates())
+                .build();
+    }
 
 
 }

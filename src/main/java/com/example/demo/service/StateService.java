@@ -1,13 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.EstateDto;
-
+import com.example.demo.exception.notFoundException;
+import com.example.demo.model.City;
+import com.example.demo.model.Estate;
 import com.example.demo.repository.StateRepository;
+import com.example.demo.util.ErrorMessage;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StateService {
@@ -16,35 +20,36 @@ public class StateService {
     private StateRepository stateRepository;
 
     public List<EstateDto> listAllStates() {
-        return stateRepository.findAll();
-    }
-
-    public EstateDto create(EstateDto state) {
-        return stateRepository.save(state);
-    }
-
-    public EstateDto updateState(EstateDto state) throws Exception {
-        Optional<EstateDto> stateDb = this.stateRepository.findById(state.getId());
-
-        if (stateDb.isPresent()) {
-            EstateDto stateUpdate = stateDb.get();
-            stateUpdate.setId(state.getId());
-            stateUpdate.setName(state.getName());
-            stateUpdate.setCities(state.getCities());
-            stateUpdate.setCountry(state.getCountry());
-            stateRepository.save(stateUpdate);
-            return stateUpdate;
-        } else {
-            throw new Exception();
+        List<EstateDto> estateDtoList = stateRepository.findAll()
+                .stream()
+                .map(EstateDto::new).collect(Collectors.toList());
+        if (estateDtoList.isEmpty()) {
+            throw new notFoundException(ErrorMessage.STATE_NOT_FOUND);
         }
+        return estateDtoList;
     }
 
-    public EstateDto getById(Integer id) {
-        return this.stateRepository.findById(id).get();
+    public EstateDto add(EstateDto estateDto) {
+
+        return new EstateDto(stateRepository.save(Estate.buildEstateEntity(estateDto)));
+
     }
 
-    public void delete(Integer id) {
+    public Estate updateState(Integer id, EstateDto estateDto) {
+        stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
+        Estate updatedState = Estate.buildEstateEntity(estateDto);
+        updatedState.setId(id);
+        return stateRepository.save(updatedState);
+    }
+
+    public Estate getById(Integer id) {
+        return stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
+    }
+
+    public Estate delete(Integer id) {
+        Estate stateToDelete = stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
         stateRepository.deleteById(id);
+        return stateToDelete;
     }
 
 }

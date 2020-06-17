@@ -18,51 +18,33 @@ public class CityController {
     private CityService cityService;
 
     @GetMapping
-    public ResponseEntity getAllCities() throws Exception {
-        try {
-            return ResponseEntity.ok().body(this.cityService.listAllCities());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error " + e);
-        }
+    public ResponseEntity getAllCities() {
+        return ResponseEntity.ok(cityService.listAllCities());
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity getCityById(@PathVariable Integer id) throws Exception {
-        try {
-            return ResponseEntity.ok().body(this.cityService.getCity(id));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
-        }
+    public ResponseEntity getCityById(@PathVariable Integer id) {
+        return ResponseEntity.ok(cityService.getCity(id));
     }
 
     @PostMapping
-    public ResponseEntity createCity(@RequestBody CityDto city) throws Exception {
-        try {
-            return ResponseEntity.ok().body(this.cityService.saveCity(city));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error " + e);
-        }
+    public ResponseEntity createCity(@RequestBody CityDto cityDto) {
+
+        return ResponseEntity.ok().body(cityService.add(cityDto));
+
     }
 
     @PutMapping(path = "{id}")
     public ResponseEntity updateCity(@PathVariable Integer id, @RequestBody CityDto city) {
-        try {
-            return ResponseEntity.ok().body(this.cityService.updateCity(city));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found " + e);
-        }
+
+        return ResponseEntity.ok().body(cityService.updateCity(id, city));
 
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity deleteCity(@PathVariable Integer id) throws Exception {
-        try {
-            this.cityService.delete(id);
-            return ResponseEntity.ok().body(HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Delete not implemented " + e);
+    public ResponseEntity deleteCity(@PathVariable Integer id) {
 
-        }
+        return ResponseEntity.ok().body(cityService.delete(id));
 
     }
 }

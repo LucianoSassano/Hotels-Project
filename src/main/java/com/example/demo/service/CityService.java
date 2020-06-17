@@ -1,13 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CityDto;
+import com.example.demo.exception.notFoundException;
+import com.example.demo.model.City;
 import com.example.demo.repository.CityRepository;
+import com.example.demo.util.ErrorMessage;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CityService {
@@ -15,38 +19,38 @@ public class CityService {
     @Autowired
     private CityRepository cityRepository;
 
-    public List<CityDto> listAllCities(){
-        return cityRepository.findAll();
-    }
-
-    public CityDto saveCity(CityDto city) {
-        return cityRepository.save(city);
-    }
-
-    public CityDto updateCity(CityDto city) throws Exception {
-        Optional<CityDto> cityDb = this.cityRepository.findById(city.getId());
-
-        if (cityDb.isPresent()) {
-            CityDto cityUpdate = cityDb.get();
-            cityUpdate.setId(city.getId());
-            cityUpdate.setName(city.getName());
-            cityUpdate.setState(city.getState());
-            cityUpdate.setZipCode(city.getZipCode());
-            cityRepository.save(cityUpdate);
-            return cityUpdate;
-        } else {
-            throw new Exception();
+    public List<CityDto> listAllCities() {
+        List<CityDto> cityDtoList = cityRepository.findAll()
+                .stream()
+                .map(CityDto::new).collect(Collectors.toList());
+        if (cityDtoList.isEmpty()) {
+            throw new notFoundException(ErrorMessage.CITY_NOT_FOUND);
         }
+        return cityDtoList;
     }
 
-    public CityDto getCity(Integer id) {
+    public CityDto add(CityDto cityDto) {
+        return new CityDto(cityRepository.save(City.buildCityEntity(cityDto)));
+    }
 
-        return cityRepository.findById(id).get();
+    public City updateCity(Integer id, CityDto cityDto) {
 
+        cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
+        City updatedCity = City.buildCityEntity(cityDto);
+        updatedCity.setId(id);
+        return cityRepository.save(updatedCity);
 
     }
 
-    public void delete(Integer id) {
+    public City getCity(Integer id) {
+
+        return cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
+
+    }
+
+    public City delete(Integer id) {
+        City cityToDelete = cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
         cityRepository.deleteById(id);
+        return cityToDelete;
     }
 }

@@ -18,7 +18,7 @@ public class CityDto {
 
         this.id = city.getId();
         this.name = city.getName();
-        this.zipCode = city.getZipCode();
+        this.zipCode = city.getZip_code();
         this.state = city.getState();
     }
 
