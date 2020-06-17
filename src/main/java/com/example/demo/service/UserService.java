@@ -1,4 +1,5 @@
 package com.example.demo.service;
+
 import com.example.demo.dto.CardDTO;
 import com.example.demo.dto.UserCardsDTO;
 import com.example.demo.dto.UserDTO;
@@ -8,70 +9,63 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.util.UserExceptionMessages;
 import com.example.demo.util.UserUtils;
 import lombok.Data;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Data
 public class UserService {
-    @Autowired
-   final UserRepository userRepository;
-    @Autowired
-    CreditCardService creditCardService;
+  @Autowired final UserRepository userRepository;
+  @Autowired CreditCardService creditCardService;
 
-    public List<UserDTO> findAll(){
-      List<User>users =  userRepository.findAll();
-      return UserUtils.listEntityToDTO(users);
-    }
+  public List<UserDTO> findAll() {
+    List<User> users = userRepository.findAll();
+    return UserUtils.listEntityToDTO(users);
+  }
 
-    public UserDTO insert(UserDTO userNew){
-        User toSave = User.generateInstanceFromDTO(userNew);
-        return UserDTO.generateInstanceFromUser(userRepository.save(toSave));
-    }
-    public UserDTO findById(Long id){
-        return userRepository.findById(id)
-               .map(user->UserDTO.generateInstanceFromUser(user))
-                .orElseThrow(()->new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
-    }
+  public UserDTO insert(UserDTO userNew) {
+    User toSave = User.generateInstanceFromDTO(userNew);
+    return UserDTO.generateInstanceFromUser(userRepository.save(toSave));
+  }
 
-    public UserDTO update (UserDTO userToUpdate,Integer dni) {
-                 return userRepository.findByDni(dni)
-                     .map(user->{
-                         User updated = User.generateInstanceFromDTO(userToUpdate);
-                         updated.setId(user.getId());
-                         updated.setIsDeleted(false);
-                         userRepository.save(updated);
-                         return UserDTO.generateInstanceFromUser(updated);
-                     })
-                     .orElseThrow(()->new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
-    }
+  public UserDTO findById(Long id) {
+    return userRepository
+        .findById(id)
+        .map(user -> UserDTO.generateInstanceFromUser(user))
+        .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
+  }
 
-    public User findByDni(Integer dni){
-        return userRepository.findByDni(dni)
-               .orElseThrow(()->new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
-    }
+  public UserDTO update(UserDTO userToUpdate, Integer dni) {
+    return userRepository
+        .findByDni(dni)
+        .map(
+            user -> {
+              User updated = User.generateInstanceFromDTO(userToUpdate);
+              updated.setId(user.getId());
+              updated.setIsDeleted(false);
+              userRepository.save(updated);
+              return UserDTO.generateInstanceFromUser(updated);
+            })
+        .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
+  }
 
-    public CardDTO insertCard (CardDTO card,Integer dni){
-        return creditCardService.insert(card,findByDni(dni).getId());
-    }
+  public User findByDni(Integer dni) {
+    return userRepository
+        .findByDni(dni)
+        .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
+  }
 
-    public void delete(Integer dni) {
-       userRepository.deleteById(findByDni(dni).getId());
-    }
+  public CardDTO insertCard(CardDTO card, Integer dni) {
+    return creditCardService.insert(card, findByDni(dni).getId());
+  }
 
-    public UserCardsDTO findCardsByDni(Integer dni){
-        User user  = findByDni(dni);
-      return  UserCardsDTO.generateInstanceByUser(user);
-    }
+  public void delete(Integer dni) {
+    userRepository.deleteById(findByDni(dni).getId());
+  }
+
+  public UserCardsDTO findCardsByDni(Integer dni) {
+    User user = findByDni(dni);
+    return UserCardsDTO.generateInstanceByUser(user);
+  }
 }

@@ -1,4 +1,5 @@
 package com.example.demo.dto;
+
 import com.example.demo.model.CreditCard;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,42 +22,42 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDTO implements Serializable {
 
-    @NotBlank(message= UserExceptionMessages.NOT_BLANK)
-    @NotNull(message=UserExceptionMessages.NOT_NULL)
-    private String name;
+  @NotBlank(message = UserExceptionMessages.NOT_BLANK)
+  @NotNull(message = UserExceptionMessages.NOT_NULL)
+  private String name;
 
-    @NotNull(message=UserExceptionMessages.NOT_NULL)
-    @Positive
-    private Integer dni;
+  @NotNull(message = UserExceptionMessages.NOT_NULL)
+  @Positive
+  private Integer dni;
 
-    @NotBlank(message= UserExceptionMessages.NOT_BLANK)
-    @NotNull(message=UserExceptionMessages.NOT_NULL)
-    private String address;
+  @NotBlank(message = UserExceptionMessages.NOT_BLANK)
+  @NotNull(message = UserExceptionMessages.NOT_NULL)
+  private String address;
 
-    @NotBlank(message= UserExceptionMessages.NOT_BLANK)
-    @NotNull(message=UserExceptionMessages.NOT_NULL)
-    @Email
-    private String email;
+  @NotBlank(message = UserExceptionMessages.NOT_BLANK)
+  @NotNull(message = UserExceptionMessages.NOT_NULL)
+  @Email
+  private String email;
 
-    @Positive
-    private Long phone;
+  @Positive private Long phone;
 
-    @NotNull(message=UserExceptionMessages.NOT_NULL)
-    private Role rol;
+  @NotNull(message = UserExceptionMessages.NOT_NULL)
+  private Role rol;
 
-    public static UserDTO generateInstanceFromUser(User adn){
-        return UserDTO.builder().address(adn.getAddress())
-                .email(adn.getEmail())
-                .dni(adn.getDni())
-                .name(adn.getName())
-                .phone(adn.getPhone())
-                .rol(adn.getRol())
-                .build();
-    }
+  public static UserDTO generateInstanceFromUser(User adn) {
+    return UserDTO.builder()
+        .address(adn.getAddress())
+        .email(adn.getEmail())
+        .dni(adn.getDni())
+        .name(adn.getName())
+        .phone(adn.getPhone())
+        .rol(adn.getRol())
+        .build();
+  }
 
-    private static Set<CardDTO> toCardsDTO (Set<CreditCard>listDtoCard){
-        return  listDtoCard.stream()
-                .map(card->CardDTO.generateInstanceFromEntity(card))
-                .collect(Collectors.toSet());
-    }
+  private static Set<CardDTO> toCardsDTO(Set<CreditCard> listDtoCard) {
+    return listDtoCard.stream()
+        .map(card -> CardDTO.generateInstanceFromEntity(card))
+        .collect(Collectors.toSet());
+  }
 }

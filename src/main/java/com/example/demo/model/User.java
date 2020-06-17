@@ -1,4 +1,5 @@
 package com.example.demo.model;
+
 import com.example.demo.dto.UserDTO;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,52 +20,52 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET delete_at = true WHERE id=?")
-@Where(clause = "delete_at = false")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted = false")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @JoinColumn(name = "user_id")
-    @OneToMany(cascade = CascadeType.PERSIST)
-    private List<CreditCard> cards;
+  @JoinColumn(name = "user_id")
+  @OneToMany(cascade = CascadeType.PERSIST)
+  private List<CreditCard> cards;
 
-    private String name;
-    private String address;
-    @Column(unique = true,updatable = false)
-    private Integer dni;
-    private String email;
-    private Long phone;
+  private String name;
+  private String address;
 
+  @Column(unique = true, updatable = false)
+  private Integer dni;
 
-    @NotNull
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createAt;
+  private String email;
+  private Long phone;
 
-    @NotNull
-    @UpdateTimestamp
-    private LocalDateTime updateAt;
+  @NotNull
+  @CreationTimestamp
+  @Column(updatable = false)
+  private LocalDateTime createAt;
 
-    //modify for deleted.
-    private Boolean isDeleted;
-    @PrePersist
-    void preInsert() {
-        if (this.isDeleted == null)
-            this.isDeleted = false;
-    }
-    private Role rol;
+  @NotNull @UpdateTimestamp private LocalDateTime updateAt;
 
-    public static User generateInstanceFromDTO(UserDTO adn){
-        return User.builder().address(adn.getAddress())
-                //.cards(CardsUtils.setCardsDTOtoEntity(adn.getCards()))
-                .email(adn.getEmail())
-                .dni(adn.getDni())
-                .name(adn.getName())
-                .phone(adn.getPhone())
-                .rol(adn.getRol())
-                .build();
+  // modify for deleted.
+  private Boolean isDeleted;
 
-    }
+  @PrePersist
+  void preInsert() {
+    if (this.isDeleted == null) this.isDeleted = false;
+  }
+
+  private Role rol;
+
+  public static User generateInstanceFromDTO(UserDTO adn) {
+    return User.builder()
+        .address(adn.getAddress())
+        // .cards(CardsUtils.setCardsDTOtoEntity(adn.getCards()))
+        .email(adn.getEmail())
+        .dni(adn.getDni())
+        .name(adn.getName())
+        .phone(adn.getPhone())
+        .rol(adn.getRol())
+        .build();
+  }
 }
