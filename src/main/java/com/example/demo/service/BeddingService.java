@@ -15,37 +15,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BeddingService {
 
-    private final BeddingRepository beddingRepository;
+  private final BeddingRepository beddingRepository;
 
-    public BeddingDto add(BeddingDto beddingDto) {
-        return new BeddingDto(beddingRepository.save(Bedding.buildBeddingEntity(beddingDto)));
-    }
+  public BeddingDto add(BeddingDto beddingDto) {
+    return new BeddingDto(beddingRepository.save(Bedding.buildBeddingEntity(beddingDto)));
+  }
 
-    public List<BeddingDto> getAll() {
+  public List<BeddingDto> getAll() {
 
-        return beddingRepository.findAll()
-                .stream()
-                .map(BeddingDto::new).collect(Collectors.toList());
-    }
+    return beddingRepository.findAll().stream().map(BeddingDto::new).collect(Collectors.toList());
+  }
 
-    public Bedding getById(Long id) {
-        return beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
-    }
+  public Bedding getById(Long id) {
+    return beddingRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
+  }
 
-    public Bedding delete(Long id) {
+  public Bedding delete(Long id) {
 
-        Bedding beddingToDelete = beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
-        beddingRepository.deleteById(id);
+    Bedding beddingToDelete =
+        beddingRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
+    beddingRepository.deleteById(id);
 
-        return beddingToDelete;
-    }
+    return beddingToDelete;
+  }
 
-    public Bedding replace(Long id, BeddingDto beddingDto) {
+  public Bedding replace(Long id, BeddingDto beddingDto) {
 
-        beddingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
-        Bedding updatedBedding = Bedding.buildBeddingEntity(beddingDto);
-        updatedBedding.setId(id);
+    beddingRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
+    Bedding updatedBedding = Bedding.buildBeddingEntity(beddingDto);
+    updatedBedding.setId(id);
 
-        return beddingRepository.save(updatedBedding);
-    }
+    return beddingRepository.save(updatedBedding);
+  }
 }

@@ -16,37 +16,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HotelService {
 
-    private final HotelRepository hotelRepository;
+  private final HotelRepository hotelRepository;
 
-    public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
-        return new HotelDtoOutput(hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput)));                                                                       // Converted to Output DTO and returned
-    }
+  public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
+    return new HotelDtoOutput(hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput)));
+  }
 
-    public List<HotelDtoOutput> getAll() {
+  public List<HotelDtoOutput> getAll() {
 
-        return hotelRepository.findAll()
-                .stream()
-                .map(HotelDtoOutput::new).collect(Collectors.toList());
-    }
+    return hotelRepository.findAll().stream().map(HotelDtoOutput::new).collect(Collectors.toList());
+  }
 
-    public Hotel getById(Long id) {
-        return hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
-    }
+  public Hotel getById(Long id) {
+    return hotelRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+  }
 
-    public Hotel delete(Long id) {
+  public Hotel delete(Long id) {
 
-        Hotel hotelToDelete = hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
-        hotelRepository.deleteById(id);
+    Hotel hotelToDelete =
+        hotelRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+    hotelRepository.deleteById(id);
 
-        return hotelToDelete;
-    }
+    return hotelToDelete;
+  }
 
-    public HotelDtoOutput replace(Long id, HotelDtoInput hotelDtoInput) {
+  public HotelDtoOutput replace(Long id, HotelDtoInput hotelDtoInput) {
 
-        hotelRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
-        Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
-        updatedHotel.setId(id);
+    hotelRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+    Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
+    updatedHotel.setId(id);
 
-        return new HotelDtoOutput(hotelRepository.save(updatedHotel));
-    }
+    return new HotelDtoOutput(hotelRepository.save(updatedHotel));
+  }
 }

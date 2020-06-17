@@ -20,78 +20,81 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
+  private final ReservationRepository reservationRepository;
 
-    private final RoomService roomService;
+  private final RoomService roomService;
 
-    public ReservationDtoOutput add(ReservationDtoInput reservationDtoInput) {
+  public ReservationDtoOutput add(ReservationDtoInput reservationDtoInput) {
 
-        Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-        Room room = roomService.getById(reservationDtoInput.getRoomId());
-        Hotel hotel = room.getHotel();
-        final LocalDateTime now = LocalDateTime.now();
-        // Adding extra data to the entity (which wasn't included in request)
-        reservation.setCreatedAt(now);
-        reservation.setUpdatedAt(now);
-        reservation.setRoom(room);
-        reservation.setHotel(hotel);
+    Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
+    Room room = roomService.getById(reservationDtoInput.getRoomId());
+    Hotel hotel = room.getHotel();
+    final LocalDateTime now = LocalDateTime.now();
+    reservation.setCreatedAt(now);
+    reservation.setUpdatedAt(now);
+    reservation.setRoom(room);
+    reservation.setHotel(hotel);
 
-        return new ReservationDtoOutput(reservationRepository.save(reservation));
-    }
+    return new ReservationDtoOutput(reservationRepository.save(reservation));
+  }
 
+  public List<ReservationDtoOutput> getAll() {
 
-    public List<ReservationDtoOutput> getAll() {
+    return reservationRepository.findAll().stream()
+        .map(ReservationDtoOutput::new)
+        .collect(Collectors.toList());
+  }
 
-        return reservationRepository.findAll()
-                .stream()
-                .map(ReservationDtoOutput::new).collect(Collectors.toList());
-    }
+  public Reservation getById(Long id) {
+    return reservationRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+  }
 
-    public Reservation getById(Long id) {
-        return reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
-    }
+  public List<ReservationDtoOutput> getByHotelId(Long hotelId) {
 
-    public List<ReservationDtoOutput> getByHotelId(Long hotelId) {
+    return reservationRepository.findAllByHotelId(hotelId).stream()
+        .map(ReservationDtoOutput::new)
+        .collect(Collectors.toList());
+  }
 
-        return reservationRepository.findAllByHotelId(hotelId)
-                .stream()
-                .map(ReservationDtoOutput::new).collect(Collectors.toList());
-    }
+  public List<ReservationDtoOutput> getByRoomId(Long roomId) {
 
-    public List<ReservationDtoOutput> getByRoomId(Long roomId) {
+    return reservationRepository.findAllByRoomId(roomId).stream()
+        .map(ReservationDtoOutput::new)
+        .collect(Collectors.toList());
+  }
 
-        return reservationRepository.findAllByRoomId(roomId)
-                .stream()
-                .map(ReservationDtoOutput::new).collect(Collectors.toList());
-    }
+  public Reservation delete(Long id) {
 
+    Reservation reservationToDelete =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+    reservationRepository.deleteById(id);
 
-    public Reservation delete(Long id) {
+    return reservationToDelete;
+  }
 
-        Reservation reservationToDelete = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
-        reservationRepository.deleteById(id);
+  public ReservationDtoOutput replace(Long id, ReservationDtoInput reservationDtoInput) {
 
-        return reservationToDelete;
-    }
+    Reservation reservationToUpdate =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
+    Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
+    LocalDateTime createdAt = reservationToUpdate.getCreatedAt();
+    Room room = roomService.getById(reservationDtoInput.getRoomId());
+    Hotel hotel = room.getHotel();
+    reservation.setId(id);
+    reservation.setCreatedAt(createdAt);
+    reservation.setUpdatedAt(LocalDateTime.now());
+    reservation.setRoom(room);
+    reservation.setHotel(hotel);
 
-    public ReservationDtoOutput replace(Long id, ReservationDtoInput reservationDtoInput) {
+    reservationRepository.save(reservation);
 
-        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
-
-        Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-        LocalDateTime createdAt = reservationToUpdate.getCreatedAt();
-        Room room = roomService.getById(reservationDtoInput.getRoomId());
-        Hotel hotel = room.getHotel();
-        // Adding extra data to the entity (which wasn't included in request)
-        reservation.setId(id);
-        reservation.setCreatedAt(createdAt);
-        reservation.setUpdatedAt(LocalDateTime.now());
-        reservation.setRoom(room);
-        reservation.setHotel(hotel);
-
-        reservationRepository.save(reservation);
-
-        return new ReservationDtoOutput(reservation);
-    }
+    return new ReservationDtoOutput(reservation);
+  }
 }

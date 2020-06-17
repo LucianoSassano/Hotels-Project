@@ -18,60 +18,64 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomService {
 
-    private final RoomRepository roomRepository;
-    private final BeddingService beddingService;
-    private final HotelService hotelService;
+  private final RoomRepository roomRepository;
+  private final BeddingService beddingService;
+  private final HotelService hotelService;
 
+  public RoomDtoOutput add(RoomDtoInput roomDtoInput) {
 
-    public RoomDtoOutput add(RoomDtoInput roomDtoInput) {
+    Room room = Room.buildRoomEntity(roomDtoInput);
+    Bedding bedding = beddingService.getById(roomDtoInput.getBeddingId());
+    Hotel hotel = hotelService.getById(roomDtoInput.getHotelId());
 
-        Room room = Room.buildRoomEntity(roomDtoInput);                                  //Create a Room based on the input DTO
-        Bedding bedding = beddingService.getById(roomDtoInput.getBeddingId());
-        Hotel hotel = hotelService.getById(roomDtoInput.getHotelId());
+    room.setBedding(bedding);
+    room.setHotel(hotel);
 
-        room.setBedding(bedding);         //The DTO only provides the id of the bedding, to do the insert. This line adds also the bedding data to our Room obj
-        room.setHotel(hotel);               //The DTO only provides the id of the hotel, to do the insert. This line adds also the hotel data to our Room obj
+    return new RoomDtoOutput(roomRepository.save(room));
+  }
 
-        return new RoomDtoOutput(roomRepository.save(room));                                                                       // Converted to Output DTO and returned
-    }
+  public List<RoomDtoOutput> getAll() {
 
-    public List<RoomDtoOutput> getAll() {
+    return roomRepository.findAll().stream().map(RoomDtoOutput::new).collect(Collectors.toList());
+  }
 
-        return roomRepository.findAll()
-                .stream()
-                .map(RoomDtoOutput::new).collect(Collectors.toList());
-    }
+  public Room getById(Long id) {
+    return roomRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+  }
 
-    public Room getById(Long id) {
-        return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
-    }
+  public List<RoomDtoOutput> getByHotelId(Long hotelId) {
 
-    public List<RoomDtoOutput> getByHotelId(Long hotelId) {
+    return roomRepository.findAllByHotelId(hotelId).stream()
+        .map(RoomDtoOutput::new)
+        .collect(Collectors.toList());
+  }
 
-        return roomRepository.findAllByHotelId(hotelId)
-                .stream()
-                .map(RoomDtoOutput::new).collect(Collectors.toList());
-    }
+  public Room delete(Long id) {
 
-    public Room delete(Long id) {
+    Room roomToDelete =
+        roomRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+    roomRepository.deleteById(id);
 
-        Room roomToDelete = roomRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
-        roomRepository.deleteById(id);
+    return roomToDelete;
+  }
 
-        return roomToDelete;
-    }
+  public RoomDtoOutput replace(Long id, RoomDtoInput roomDtoInput) {
 
-    public RoomDtoOutput replace(Long id, RoomDtoInput roomDtoInput) {
+    roomRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+    Room updatedRoom = Room.buildRoomEntity(roomDtoInput);
+    Bedding bedding = beddingService.getById(roomDtoInput.getBeddingId());
+    Hotel hotel = hotelService.getById(roomDtoInput.getHotelId());
 
-        roomRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
-        Room updatedRoom = Room.buildRoomEntity(roomDtoInput);
-        Bedding bedding = beddingService.getById(roomDtoInput.getBeddingId());
-        Hotel hotel = hotelService.getById(roomDtoInput.getHotelId());
+    updatedRoom.setBedding(bedding);
+    updatedRoom.setHotel(hotel);
+    updatedRoom.setId(id);
 
-        updatedRoom.setBedding(bedding);        //Adding bedding and hotel to the entity (before this line it only had bedding and hotel id)
-        updatedRoom.setHotel(hotel);
-        updatedRoom.setId(id);
-
-        return new RoomDtoOutput(roomRepository.save(updatedRoom));
-    }
+    return new RoomDtoOutput(roomRepository.save(updatedRoom));
+  }
 }

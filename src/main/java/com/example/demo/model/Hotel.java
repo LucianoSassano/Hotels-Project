@@ -6,7 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -17,48 +24,46 @@ import java.util.List;
 @Builder
 public class Hotel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hotel_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "hotel_id")
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String address;
+  private String address;
 
-//    @ManyToOne
-//    @JoinColumn(name = city_id)
-//    private City city;
+  //    @ManyToOne
+  //    @JoinColumn(name = city_id)
+  //    private City city;
 
-    @Column(unique=true)
-    private String email;
+  @Column(unique = true)
+  private String email;
 
-    private String phone;
+  private String phone;
 
-    private Boolean status;
+  private Boolean status;
 
-    private Integer roomCapacity;
+  private Integer roomCapacity;
 
-    private Integer rating;
+  private Integer rating;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
-    private List<Room> rooms;
+  @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+  private List<Room> rooms;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
+  @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+  private List<Reservation> reservations;
 
-
-    public static Hotel buildHotelEntity(HotelDtoInput hotelDtoInput) {
-        return Hotel.builder()
-                .name(hotelDtoInput.getName())
-                .address(hotelDtoInput.getAddress())
-//              .city(hotelDtoInput.getCityId())
-                .email(hotelDtoInput.getEmail())
-                .phone(hotelDtoInput.getPhone())
-                .roomCapacity(hotelDtoInput.getRoomCapacity())
-                .rating(hotelDtoInput.getRating())
-                .status(true)
-                .build();
-    }
-
+  public static Hotel buildHotelEntity(HotelDtoInput hotelDtoInput) {
+    return Hotel.builder()
+        .name(hotelDtoInput.getName())
+        .address(hotelDtoInput.getAddress())
+        //              .city(hotelDtoInput.getCityId())
+        .email(hotelDtoInput.getEmail())
+        .phone(hotelDtoInput.getPhone())
+        .roomCapacity(hotelDtoInput.getRoomCapacity())
+        .rating(hotelDtoInput.getRating())
+        .status(true)
+        .build();
+  }
 }
