@@ -22,7 +22,7 @@ public class Country {
     private Integer id;
     private String name;
 
-    @OneToMany(mappedBy = "country")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "country")
     private List<Estate> estates;
 
     public static Country buildCountryEntity(CountryDto countryDto) {

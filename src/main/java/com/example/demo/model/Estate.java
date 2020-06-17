@@ -28,7 +28,8 @@ public class Estate {
     @JoinColumn(name = "country_id")
     private Country country;
 
-    @OneToMany(mappedBy = "state")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "state")
     private List<City> cities;
 
     public static Estate buildEstateEntity(EstateDto estateDto) {
