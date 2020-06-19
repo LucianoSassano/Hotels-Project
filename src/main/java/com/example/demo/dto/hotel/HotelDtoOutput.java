@@ -29,7 +29,7 @@ public class HotelDtoOutput {
 
   private Integer roomCapacity;
 
-  private Integer rating;
+  private Long rating;
 
   @JsonBackReference private List<RoomDtoOutput> rooms;
 

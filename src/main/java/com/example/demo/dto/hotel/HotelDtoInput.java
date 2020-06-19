@@ -45,5 +45,5 @@ public class HotelDtoInput {
 
   @NotNull(message = ErrorMessage.NOT_NULL)
   @Positive(message = ErrorMessage.NOT_NEGATIVE)
-  private Integer rating;
+  private Long rating;
 }

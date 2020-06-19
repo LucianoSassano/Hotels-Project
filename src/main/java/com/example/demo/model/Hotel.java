@@ -46,7 +46,7 @@ public class Hotel {
 
   private Integer roomCapacity;
 
-  private Integer rating;
+  private Long rating;
 
   @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
   private List<Room> rooms;
