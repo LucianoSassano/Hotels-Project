@@ -9,25 +9,7 @@ public class UserUtils {
 
   public static List<UserDTO> listEntityToDTO(List<User> users) {
     return users.stream()
-        .map(
-            user ->
-                new UserDTO(
-                    user.getName(),
-                    user.getDni(),
-                    user.getAddress(),
-                    user.getEmail(),
-                    user.getPhone(),
-                    user.getRol()))
+        .map(user -> UserDTO.generateInstanceFromUser(user))
         .collect(Collectors.toList());
   }
-
-  public static UserDTO entitytoDTO(User user) {
-    return new UserDTO(
-        user.getName(),
-        user.getDni(),
-        user.getAddress(),
-        user.getEmail(),
-        user.getPhone(),
-        user.getRol());
   }
-}

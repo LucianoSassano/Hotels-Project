@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.UserDTO;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,7 +36,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "userId")
   @OneToMany(cascade = CascadeType.PERSIST)
   private List<CreditCard> cards;
 
@@ -40,14 +49,13 @@ public class User {
   private String email;
   private Long phone;
 
-  @NotNull
+
   @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime createAt;
 
-  @NotNull @UpdateTimestamp private LocalDateTime updateAt;
+ @UpdateTimestamp private LocalDateTime updateAt;
 
-  // modify for deleted.
   private Boolean isDeleted;
 
   @PrePersist
@@ -60,7 +68,6 @@ public class User {
   public static User generateInstanceFromDTO(UserDTO adn) {
     return User.builder()
         .address(adn.getAddress())
-        // .cards(CardsUtils.setCardsDTOtoEntity(adn.getCards()))
         .email(adn.getEmail())
         .dni(adn.getDni())
         .name(adn.getName())

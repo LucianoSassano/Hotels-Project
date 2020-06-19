@@ -16,8 +16,13 @@ import java.util.List;
 @Service
 @Data
 public class UserService {
-  @Autowired final UserRepository userRepository;
-  @Autowired CreditCardService creditCardService;
+  final UserRepository userRepository;
+  final CreditCardService creditCardService;
+
+  public UserService(UserRepository userRepository, CreditCardService creditCardService) {
+    this.userRepository = userRepository;
+    this.creditCardService = creditCardService;
+  }
 
   public List<UserDTO> findAll() {
     List<User> users = userRepository.findAll();
@@ -32,21 +37,15 @@ public class UserService {
   public UserDTO findById(Long id) {
     return userRepository
         .findById(id)
-        .map(user -> UserDTO.generateInstanceFromUser(user))
+        .map(UserDTO::generateInstanceFromUser)
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
-  public UserDTO update(UserDTO userToUpdate, Integer dni) {
+  public UserDTO update(UserDTO dataForUpdate, Integer dni) {
     return userRepository
         .findByDni(dni)
         .map(
-            user -> {
-              User updated = User.generateInstanceFromDTO(userToUpdate);
-              updated.setId(user.getId());
-              updated.setIsDeleted(false);
-              userRepository.save(updated);
-              return UserDTO.generateInstanceFromUser(updated);
-            })
+            user -> updateInstance(user,dataForUpdate))
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
@@ -67,5 +66,12 @@ public class UserService {
   public UserCardsDTO findCardsByDni(Integer dni) {
     User user = findByDni(dni);
     return UserCardsDTO.generateInstanceByUser(user);
+  }
+  public UserDTO updateInstance(User user,UserDTO data){
+    User toUpdated = User.generateInstanceFromDTO(data);
+    toUpdated.setId(user.getId());
+    toUpdated.setIsDeleted(false);
+    userRepository.save(toUpdated);
+    return UserDTO.generateInstanceFromUser(toUpdated);
   }
 }

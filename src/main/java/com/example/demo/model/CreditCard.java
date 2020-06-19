@@ -10,7 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,7 +32,7 @@ public class CreditCard {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull private Long user_id;
+  @NotNull private Long userId;
 
   @Column(unique = true, updatable = false)
   private Long number;

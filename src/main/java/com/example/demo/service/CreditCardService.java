@@ -22,7 +22,7 @@ public class CreditCardService {
 
   public CardDTO insert(CardDTO toInsert, Long id) {
     CreditCard toSave = CreditCard.generateInstanceFromDTO(toInsert);
-    toSave.setUser_id(id);
+    toSave.setUserId(id);
     return CardDTO.generateInstanceFromEntity(creditCardRepository.save(toSave));
   }
 
