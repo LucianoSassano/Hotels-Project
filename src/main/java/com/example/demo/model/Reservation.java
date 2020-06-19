@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +20,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +34,8 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE reservations SET is_deleted = true WHERE reservation_id=?")
+@Where(clause = "is_deleted = false")
 public class Reservation {
 
   @Id
@@ -49,13 +58,23 @@ public class Reservation {
 
   private LocalDate checkOut;
 
+  @CreationTimestamp
+  @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  private LocalDateTime updatedAt;
+  @UpdateTimestamp private LocalDateTime updatedAt;
 
   private Double finalPrice;
 
   private Boolean isPaid;
+
+  @NotNull private Boolean isDeleted;
+
+  @PrePersist
+  @PreUpdate
+  void preInsert() {
+    if (this.isDeleted == null) this.isDeleted = false;
+  }
 
   public static Reservation buildReservationEntity(ReservationDtoInput reservationDtoInput) {
     return Reservation.builder()

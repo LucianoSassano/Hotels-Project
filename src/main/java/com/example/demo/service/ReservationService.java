@@ -12,7 +12,6 @@ import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +28,6 @@ public class ReservationService {
     Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
     Room room = roomService.getById(reservationDtoInput.getRoomId());
     Hotel hotel = room.getHotel();
-    final LocalDateTime now = LocalDateTime.now();
-    reservation.setCreatedAt(now);
-    reservation.setUpdatedAt(now);
     reservation.setRoom(room);
     reservation.setHotel(hotel);
 
@@ -78,18 +74,15 @@ public class ReservationService {
 
   public ReservationDtoOutput replace(Long id, ReservationDtoInput reservationDtoInput) {
 
-    Reservation reservationToUpdate =
-        reservationRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+    reservationRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
     Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-    LocalDateTime createdAt = reservationToUpdate.getCreatedAt();
     Room room = roomService.getById(reservationDtoInput.getRoomId());
     Hotel hotel = room.getHotel();
+
     reservation.setId(id);
-    reservation.setCreatedAt(createdAt);
-    reservation.setUpdatedAt(LocalDateTime.now());
     reservation.setRoom(room);
     reservation.setHotel(hotel);
 

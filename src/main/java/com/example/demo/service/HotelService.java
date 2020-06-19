@@ -8,6 +8,7 @@ import com.example.demo.repository.HotelRepository;
 import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +19,19 @@ public class HotelService {
 
   private final HotelRepository hotelRepository;
 
+  @Transactional
   public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
-    return new HotelDtoOutput(hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput)));
+    Hotel hotelToAdd = Hotel.buildHotelEntity(hotelDtoInput);
+    hotelRepository
+        .findHotelByEmail(hotelDtoInput.getEmail())
+        .ifPresent(
+            hotel -> {
+              if (hotel.getIsDeleted()) {
+                hotelRepository.restoreHotelById(hotel.getId());
+                hotelToAdd.setId(hotel.getId());
+              }
+            });
+    return new HotelDtoOutput(hotelRepository.save(hotelToAdd));
   }
 
   public List<HotelDtoOutput> getAll() {
