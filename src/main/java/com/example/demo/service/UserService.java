@@ -24,20 +24,16 @@ public class UserService {
     this.creditCardService = creditCardService;
   }
 
-  public List<UserDTO> findAll() {
-    List<User> users = userRepository.findAll();
-    return UserUtils.listEntityToDTO(users);
-  }
+  public List<User> findAll() {return userRepository.findAll();}
 
   public UserDTO insert(UserDTO userNew) {
     User toSave = User.generateInstanceFromDTO(userNew);
     return UserDTO.generateInstanceFromUser(userRepository.save(toSave));
   }
 
-  public UserDTO findById(Long id) {
+  public User findById(Long id) {
     return userRepository
         .findById(id)
-        .map(UserDTO::generateInstanceFromUser)
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
@@ -63,9 +59,8 @@ public class UserService {
     userRepository.deleteById(findByDni(dni).getId());
   }
 
-  public UserCardsDTO findCardsByDni(Integer dni) {
-    User user = findByDni(dni);
-    return UserCardsDTO.generateInstanceByUser(user);
+  public User findUserWithCardsByDni(Integer dni) {
+    return findByDni(dni);
   }
   public UserDTO updateInstance(User user,UserDTO data){
     User toUpdated = User.generateInstanceFromDTO(data);
