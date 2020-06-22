@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoomDtoOutput {
 
+  private Long id;
+
   private Category category;
 
   private BeddingDto bedding;
@@ -28,6 +30,7 @@ public class RoomDtoOutput {
   private Double dailyRate;
 
   public RoomDtoOutput(Room room) {
+    this.id = room.getId();
     this.category = room.getCategory();
     this.bedding = new BeddingDto(room.getBedding());
     this.hotel = new HotelDtoOutput(room.getHotel());

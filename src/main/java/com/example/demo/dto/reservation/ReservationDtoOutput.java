@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ReservationDtoOutput {
 
+  private Long id;
+
   private RoomDtoOutput room;
 
   private LocalDate checkIn;
@@ -28,6 +30,7 @@ public class ReservationDtoOutput {
   private Boolean isPaid;
 
   public ReservationDtoOutput(Reservation reservation) {
+    this.id = reservation.getId();
     this.room = new RoomDtoOutput(reservation.getRoom());
     this.checkIn = reservation.getCheckIn();
     this.checkOut = reservation.getCheckOut();

@@ -17,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class HotelDtoOutput {
 
+  private Long id;
+
   private String name;
 
   private String address;
@@ -34,7 +36,7 @@ public class HotelDtoOutput {
   @JsonBackReference private List<RoomDtoOutput> rooms;
 
   public HotelDtoOutput(Hotel hotel) {
-
+    this.id = hotel.getId();
     this.name = hotel.getName();
     this.address = hotel.getAddress();
     //      this.cityDto = new cityDto(hotel.getCity());

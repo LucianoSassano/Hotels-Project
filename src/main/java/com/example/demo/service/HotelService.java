@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
-import com.example.demo.dto.hotel.HotelDtoOutput;
 import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Hotel;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +19,7 @@ public class HotelService {
   private final HotelRepository hotelRepository;
 
   @Transactional
-  public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
+  public Hotel add(HotelDtoInput hotelDtoInput) {
     Hotel hotelToAdd = Hotel.buildHotelEntity(hotelDtoInput);
     hotelRepository
         .findHotelByEmail(hotelDtoInput.getEmail())
@@ -34,12 +32,12 @@ public class HotelService {
                 throw new DuplicateEntryException(
                     ErrorMessage.DUPLICATE_ENTRY + "email: " + hotelToAdd.getEmail());
             });
-    return new HotelDtoOutput(hotelRepository.save(hotelToAdd));
+    return hotelRepository.save(hotelToAdd);
   }
 
-  public List<HotelDtoOutput> getAll() {
+  public List<Hotel> getAll() {
 
-    return hotelRepository.findAll().stream().map(HotelDtoOutput::new).collect(Collectors.toList());
+    return hotelRepository.findAll();
   }
 
   public Hotel getById(Long id) {
@@ -59,7 +57,7 @@ public class HotelService {
     return hotelToDelete;
   }
 
-  public HotelDtoOutput replace(Long id, HotelDtoInput hotelDtoInput) {
+  public Hotel replace(Long id, HotelDtoInput hotelDtoInput) {
 
     hotelRepository
         .findById(id)
@@ -67,6 +65,6 @@ public class HotelService {
     Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
     updatedHotel.setId(id);
 
-    return new HotelDtoOutput(hotelRepository.save(updatedHotel));
+    return hotelRepository.save(updatedHotel);
   }
 }

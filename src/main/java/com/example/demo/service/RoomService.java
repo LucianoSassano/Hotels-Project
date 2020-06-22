@@ -22,7 +22,7 @@ public class RoomService {
   private final BeddingService beddingService;
   private final HotelService hotelService;
 
-  public RoomDtoOutput add(RoomDtoInput roomDtoInput) {
+  public Room add(RoomDtoInput roomDtoInput) {
 
     Room room = Room.buildRoomEntity(roomDtoInput);
     Bedding bedding = beddingService.getById(roomDtoInput.getBeddingId());
@@ -31,12 +31,12 @@ public class RoomService {
     room.setBedding(bedding);
     room.setHotel(hotel);
 
-    return new RoomDtoOutput(roomRepository.save(room));
+    return roomRepository.save(room);
   }
 
-  public List<RoomDtoOutput> getAll() {
+  public List<Room> getAll() {
 
-    return roomRepository.findAll().stream().map(RoomDtoOutput::new).collect(Collectors.toList());
+    return roomRepository.findAll();
   }
 
   public Room getById(Long id) {
@@ -45,11 +45,9 @@ public class RoomService {
         .orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
   }
 
-  public List<RoomDtoOutput> getByHotelId(Long hotelId) {
+  public List<Room> getAllByHotelId(Long hotelId) {
 
-    return roomRepository.findAllByHotelId(hotelId).stream()
-        .map(RoomDtoOutput::new)
-        .collect(Collectors.toList());
+    return roomRepository.findAllByHotelId(hotelId);
   }
 
   public Room delete(Long id) {
@@ -63,7 +61,7 @@ public class RoomService {
     return roomToDelete;
   }
 
-  public RoomDtoOutput replace(Long id, RoomDtoInput roomDtoInput) {
+  public Room replace(Long id, RoomDtoInput roomDtoInput) {
 
     roomRepository
         .findById(id)
@@ -76,6 +74,6 @@ public class RoomService {
     updatedRoom.setHotel(hotel);
     updatedRoom.setId(id);
 
-    return new RoomDtoOutput(roomRepository.save(updatedRoom));
+    return roomRepository.save(updatedRoom);
   }
 }

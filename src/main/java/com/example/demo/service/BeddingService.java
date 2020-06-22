@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,13 +16,13 @@ public class BeddingService {
 
   private final BeddingRepository beddingRepository;
 
-  public BeddingDto add(BeddingDto beddingDto) {
-    return new BeddingDto(beddingRepository.save(Bedding.buildBeddingEntity(beddingDto)));
+  public Bedding add(BeddingDto beddingDto) {
+    return beddingRepository.save(Bedding.buildBeddingEntity(beddingDto));
   }
 
-  public List<BeddingDto> getAll() {
+  public List<Bedding> getAll() {
 
-    return beddingRepository.findAll().stream().map(BeddingDto::new).collect(Collectors.toList());
+    return beddingRepository.findAll();
   }
 
   public Bedding getById(Long id) {

@@ -19,6 +19,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class BeddingDto {
 
+  private Long id;
+
   @NotBlank(message = ErrorMessage.NOT_BLANK)
   @Size(min = 1, max = 50, message = ErrorMessage.INVALID_STRING_SIZE)
   private String description;
@@ -28,6 +30,7 @@ public class BeddingDto {
   private Integer maxCapacity;
 
   public BeddingDto(Bedding bedding) {
+    this.id = bedding.getId();
     this.description = bedding.getDescription();
     this.maxCapacity = bedding.getMaxCapacity();
   }
