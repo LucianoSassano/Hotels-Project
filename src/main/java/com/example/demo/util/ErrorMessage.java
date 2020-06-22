@@ -14,4 +14,5 @@ public class ErrorMessage {
   public static final String INVALID_EMAIL = "Field must provide a valid E-mail";
   public static final String INVALID_STRING_SIZE = "Field must be between 1 and 50 characters";
   public static final String INVALID_DATE_FORMAT = "Date format must be " + Constants.DATE_PATTERN;
+  public static final String DUPLICATE_ENTRY = "Duplicate register on DB: ";
 }

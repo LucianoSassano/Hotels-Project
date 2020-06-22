@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
+import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Hotel;
 import com.example.demo.repository.HotelRepository;
@@ -29,7 +30,9 @@ public class HotelService {
               if (hotel.getIsDeleted()) {
                 hotelRepository.restoreHotelById(hotel.getId());
                 hotelToAdd.setId(hotel.getId());
-              }
+              } else
+                throw new DuplicateEntryException(
+                    ErrorMessage.DUPLICATE_ENTRY + "email: " + hotelToAdd.getEmail());
             });
     return new HotelDtoOutput(hotelRepository.save(hotelToAdd));
   }
