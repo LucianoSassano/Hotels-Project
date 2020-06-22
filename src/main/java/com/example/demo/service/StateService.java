@@ -2,11 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.EstateDto;
 import com.example.demo.exception.notFoundException;
-import com.example.demo.model.City;
 import com.example.demo.model.Estate;
 import com.example.demo.repository.StateRepository;
 import com.example.demo.util.ErrorMessage;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
