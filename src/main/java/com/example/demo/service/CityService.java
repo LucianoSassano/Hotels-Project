@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CityDto;
+import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.notFoundException;
 import com.example.demo.model.City;
 import com.example.demo.repository.CityRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,21 @@ public class CityService {
 
     @Autowired
     private CityRepository cityRepository;
+
+    @Transactional
+    public CityDto add(CityDto cityDto) {
+        City cityToAdd = City.buildCityEntity(cityDto);
+        cityRepository.findCityByZip(cityDto.getZipCode()).ifPresent(city -> {
+            if (city.getIsDeleted()) {
+                cityRepository.restoreCityById(city.getId());
+                cityToAdd.setId(city.getId());
+            } else
+                throw new DuplicateEntryException(ErrorMessage.DUPLICATE_ENTRY + "zip_code : " + cityToAdd.getZip_code());
+        });
+
+        return new CityDto(cityRepository.save(cityToAdd));
+
+    }
 
     public List<CityDto> listAllCities() {
         List<CityDto> cityDtoList = cityRepository.findAll()
@@ -29,9 +46,6 @@ public class CityService {
         return cityDtoList;
     }
 
-    public CityDto add(CityDto cityDto) {
-        return new CityDto(cityRepository.save(City.buildCityEntity(cityDto)));
-    }
 
     public City updateCity(Integer id, CityDto cityDto) {
 

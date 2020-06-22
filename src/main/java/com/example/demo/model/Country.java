@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -15,6 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE country SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false ")
 public class Country {
 
     @Id
@@ -22,8 +27,19 @@ public class Country {
     private Integer id;
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "country")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "country")
     private List<Estate> estates;
+
+    @NotNull
+    private Boolean isDeleted;
+
+    @PrePersist
+    @PreUpdate
+    void preInsert() {
+        if (this.isDeleted == null) {
+            this.isDeleted = false;
+        }
+    }
 
     public static Country buildCountryEntity(CountryDto countryDto) {
         return Country.builder()

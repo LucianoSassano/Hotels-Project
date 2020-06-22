@@ -14,6 +14,7 @@ public class ErrorMessage {
     public static final String CITY_NOT_FOUND = "There wasn't any city according to the request";
     public static final String STATE_NOT_FOUND = "There wasn't any state according to the request";
     public static final String COUNTRY_NOT_FOUND = "There wasn't any country according to the request";
+    public static final String DUPLICATE_ENTRY = "Duplicate register on DB";
     //public static final String INVALID_DATE_FORMAT = "Date format must be " + Constants.DATE_PATTERN;
 
 
