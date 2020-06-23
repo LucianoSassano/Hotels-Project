@@ -23,11 +23,10 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Integer id;
+    private Long id;
 
     private String name;
 
-    @Column(name = "zip_code")
     private Integer zip_code;
 
     @ManyToOne

@@ -45,7 +45,7 @@ public class CityService {
     }
 
 
-    public City updateCity(Integer id, CityDto cityDto) {
+    public City updateCity(Long id, CityDto cityDto) {
 
         cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
         City updatedCity = City.buildCityEntity(cityDto);
@@ -54,13 +54,13 @@ public class CityService {
 
     }
 
-    public City getCity(Integer id) {
+    public City getCity(Long id) {
 
         return cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
 
     }
 
-    public City delete(Integer id) {
+    public City delete(Long id) {
         City cityToDelete = cityRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.CITY_NOT_FOUND));
         cityRepository.deleteById(id);
         return cityToDelete;

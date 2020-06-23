@@ -22,7 +22,7 @@ public class EstateDto {
 
     @NotNull(message = ErrorMessage.NOT_NULL)
     @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Integer id;
+    private Long id;
 
     @NotNull(message = ErrorMessage.NOT_NULL)
     @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
@@ -32,7 +32,7 @@ public class EstateDto {
     private Country country;
 
     @NotNull(message = ErrorMessage.NOT_NULL)
-    @NotEmpty(message = "cities cannot be empty")
+    @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
     private List<City> cities;
 
     public EstateDto(Estate state) {

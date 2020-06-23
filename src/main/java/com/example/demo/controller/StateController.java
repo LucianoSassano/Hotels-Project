@@ -22,7 +22,7 @@ public class StateController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity getStateById(@PathVariable Integer id) {
+    public ResponseEntity getStateById(@PathVariable Long id) {
 
         return ResponseEntity.ok().body(stateService.getById(id));
 
@@ -36,7 +36,7 @@ public class StateController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity updateState(@PathVariable Integer id, @RequestBody EstateDto estateDto) {
+    public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateDto estateDto) {
 
 
         return ResponseEntity.ok().body(stateService.updateState(id, estateDto));
@@ -44,7 +44,7 @@ public class StateController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteState(@PathVariable Integer id) {
+    public ResponseEntity deleteState(@PathVariable Long id) {
 
         return ResponseEntity.ok().body(stateService.delete(id));
 

@@ -17,14 +17,9 @@ public class StateService {
     @Autowired
     private StateRepository stateRepository;
 
-    public List<EstateDto> listAllStates() {
-        List<EstateDto> estateDtoList = stateRepository.findAll()
-                .stream()
-                .map(EstateDto::new).collect(Collectors.toList());
-        if (estateDtoList.isEmpty()) {
-            throw new notFoundException(ErrorMessage.STATE_NOT_FOUND);
-        }
-        return estateDtoList;
+    public List<Estate> listAllStates() {
+        return stateRepository.findAll();
+
     }
 
     public EstateDto add(EstateDto estateDto) {
@@ -33,18 +28,18 @@ public class StateService {
 
     }
 
-    public Estate updateState(Integer id, EstateDto estateDto) {
+    public Estate updateState(Long id, EstateDto estateDto) {
         stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
         Estate updatedState = Estate.buildEstateEntity(estateDto);
         updatedState.setId(id);
         return stateRepository.save(updatedState);
     }
 
-    public Estate getById(Integer id) {
+    public Estate getById(Long id) {
         return stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
     }
 
-    public Estate delete(Integer id) {
+    public Estate delete(Long id) {
         Estate stateToDelete = stateRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.STATE_NOT_FOUND));
         stateRepository.deleteById(id);
         return stateToDelete;

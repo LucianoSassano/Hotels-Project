@@ -20,7 +20,7 @@ public class CountryDto {
 
     @NotNull(message = ErrorMessage.NOT_NULL)
     @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Integer id;
+    private Long id;
 
     @NotNull(message = ErrorMessage.NOT_NULL)
     @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
