@@ -10,38 +10,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CountryController {
 
-    @Autowired
-    private CountryService countryService;
+  @Autowired private CountryService countryService;
 
-    @GetMapping
-    public ResponseEntity getAllCountries() {
+  @GetMapping
+  public ResponseEntity getAllCountries() {
 
-        return ResponseEntity.ok(countryService.listAllCountries());
-    }
+    return ResponseEntity.ok(countryService.listAllCountries());
+  }
 
-    @GetMapping(path = "{id}")
-    public ResponseEntity findCountryById(@PathVariable Long id) {
+  @GetMapping(path = "{id}")
+  public ResponseEntity findCountryById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(new CountryDto(countryService.getById(id)));
-    }
+    return ResponseEntity.ok(new CountryDto(countryService.getById(id)));
+  }
 
-    @PostMapping
-    public ResponseEntity createCountry(@RequestBody CountryDto countryDto) {
-        return ResponseEntity.ok(countryService.add(countryDto));
-    }
+  @PostMapping
+  public ResponseEntity createCountry(@RequestBody CountryDto countryDto) {
+    return ResponseEntity.ok(countryService.add(countryDto));
+  }
 
-    @PutMapping(path = "{id}")
-    public ResponseEntity updateCountry(@PathVariable Long id, @RequestBody CountryDto countryDto) {
+  @PutMapping(path = "{id}")
+  public ResponseEntity updateCountry(@PathVariable Long id, @RequestBody CountryDto countryDto) {
 
-        return ResponseEntity.ok(countryService.updateCountry(id, countryDto));
+    return ResponseEntity.ok(countryService.updateCountry(id, countryDto));
+  }
 
-    }
+  @DeleteMapping(path = "{id}")
+  public ResponseEntity deleteCountry(@PathVariable Long id) {
 
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity deleteCountry(@PathVariable Long id) {
-
-        return ResponseEntity.ok(countryService.deleteCountryById(id));
-    }
-
-
+    return ResponseEntity.ok(countryService.deleteCountryById(id));
+  }
 }

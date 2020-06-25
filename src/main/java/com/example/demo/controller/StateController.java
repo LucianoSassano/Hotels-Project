@@ -10,45 +10,35 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class StateController {
 
-    @Autowired
-    private StateService stateService;
+  @Autowired private StateService stateService;
 
+  @GetMapping
+  public ResponseEntity getAllStates() {
 
-    @GetMapping
-    public ResponseEntity getAllStates() {
+    return ResponseEntity.ok().body(stateService.listAllStates());
+  }
 
-        return ResponseEntity.ok().body(stateService.listAllStates());
+  @GetMapping(path = "/{id}")
+  public ResponseEntity getStateById(@PathVariable Long id) {
 
-    }
+    return ResponseEntity.ok().body(stateService.getById(id));
+  }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity getStateById(@PathVariable Long id) {
+  @PostMapping
+  public ResponseEntity createState(@RequestBody EstateDto estateDto) {
 
-        return ResponseEntity.ok().body(stateService.getById(id));
+    return ResponseEntity.ok().body(stateService.add(estateDto));
+  }
 
-    }
+  @PutMapping(path = "/{id}")
+  public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateDto estateDto) {
 
-    @PostMapping
-    public ResponseEntity createState(@RequestBody EstateDto estateDto) {
+    return ResponseEntity.ok().body(stateService.updateState(id, estateDto));
+  }
 
-        return ResponseEntity.ok().body(stateService.add(estateDto));
+  @DeleteMapping(path = "/{id}")
+  public ResponseEntity deleteState(@PathVariable Long id) {
 
-    }
-
-    @PutMapping(path = "/{id}")
-    public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateDto estateDto) {
-
-
-        return ResponseEntity.ok().body(stateService.updateState(id, estateDto));
-
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteState(@PathVariable Long id) {
-
-        return ResponseEntity.ok().body(stateService.delete(id));
-
-    }
-
-
+    return ResponseEntity.ok().body(stateService.delete(id));
+  }
 }

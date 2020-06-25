@@ -18,23 +18,21 @@ import java.util.List;
 @AllArgsConstructor
 public class CountryDto {
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Long id;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
+  private Long id;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
-    private String name;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
+  private String name;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @NotEmpty(message = "states cannot be empty")
-    private List<Estate> states;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
+  private List<Estate> states;
 
-    public CountryDto(Country country) {
-        this.id = country.getId();
-        this.name = country.getName();
-        this.states = country.getEstates();
-    }
-
-
+  public CountryDto(Country country) {
+    this.id = country.getId();
+    this.name = country.getName();
+    this.states = country.getEstates();
+  }
 }

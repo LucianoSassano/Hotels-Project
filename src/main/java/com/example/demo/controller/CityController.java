@@ -17,37 +17,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CityController {
 
-    @Autowired
-    private CityService cityService;
+  @Autowired private CityService cityService;
 
-    @GetMapping
-    public ResponseEntity getAllCities() {
-        return ResponseEntity.ok(cityService.listAllCities());
-    }
+  @GetMapping
+  public ResponseEntity getAllCities() {
+    return ResponseEntity.ok(cityService.listAllCities());
+  }
 
-    @GetMapping(path = "{id}")
-    public ResponseEntity getCityById(@PathVariable Long id) {
-        return ResponseEntity.ok(cityService.getCity(id));
-    }
+  @GetMapping(path = "{id}")
+  public ResponseEntity getCityById(@PathVariable Long id) {
+    return ResponseEntity.ok(cityService.getCity(id));
+  }
 
-    @PostMapping
-    public ResponseEntity createCity(@RequestBody CityDto cityDto) {
+  @PostMapping
+  public ResponseEntity createCity(@RequestBody CityDto cityDto) {
 
-        return ResponseEntity.ok().body(cityService.add(cityDto));
+    return ResponseEntity.ok().body(cityService.add(cityDto));
+  }
 
-    }
+  @PutMapping(path = "{id}")
+  public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityDto city) {
 
-    @PutMapping(path = "{id}")
-    public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityDto city) {
+    return ResponseEntity.ok().body(cityService.updateCity(id, city));
+  }
 
-        return ResponseEntity.ok().body(cityService.updateCity(id, city));
+  @DeleteMapping(path = "{id}")
+  public ResponseEntity deleteCity(@PathVariable Long id) {
 
-    }
-
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity deleteCity(@PathVariable Long id) {
-
-        return ResponseEntity.ok().body(cityService.delete(id));
-
-    }
+    return ResponseEntity.ok().body(cityService.delete(id));
+  }
 }

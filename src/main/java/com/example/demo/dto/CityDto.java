@@ -15,27 +15,26 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class CityDto {
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Long id;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
+  private Long id;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
-    private String name;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
+  private String name;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Integer zipCode;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
+  private Integer zipCode;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    private Estate state;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  private Estate state;
 
-    public CityDto(City city) {
+  public CityDto(City city) {
 
-        this.id = city.getId();
-        this.name = city.getName();
-        this.zipCode = city.getZip_code();
-        this.state = city.getState();
-    }
-
+    this.id = city.getId();
+    this.name = city.getName();
+    this.zipCode = city.getZip_code();
+    this.state = city.getState();
+  }
 }

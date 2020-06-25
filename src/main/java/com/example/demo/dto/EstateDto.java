@@ -20,27 +20,25 @@ import java.util.List;
 @AllArgsConstructor
 public class EstateDto {
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-    private Long id;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
+  private Long id;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
-    private String name;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
+  private String name;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    private Country country;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  private Country country;
 
-    @NotNull(message = ErrorMessage.NOT_NULL)
-    @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
-    private List<City> cities;
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
+  private List<City> cities;
 
-    public EstateDto(Estate state) {
-        this.id = state.getId();
-        this.name = state.getName();
-        this.country = state.getCountry();
-        this.cities = state.getCities();
-
-    }
-
+  public EstateDto(Estate state) {
+    this.id = state.getId();
+    this.name = state.getName();
+    this.country = state.getCountry();
+    this.cities = state.getCities();
+  }
 }
