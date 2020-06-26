@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.CreditCardService;
+import com.example.demo.util.CardsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,16 +17,16 @@ public class CreditCardController {
 
   @GetMapping("")
   public ResponseEntity getAll() {
-    return ResponseEntity.ok(creditCardService.findAll());
+    return ResponseEntity.ok(CardsUtils.convertToListDTO(creditCardService.findAll()));
   }
 
   @GetMapping("/{number}")
-  public ResponseEntity getByNumber(@PathVariable("number") Long number) throws Exception {
+  public ResponseEntity getByNumber(@PathVariable("number") Long number){
     return ResponseEntity.ok().body(creditCardService.findByNumber(number));
   }
 
   @DeleteMapping("/{number}")
-  public void delete(@PathVariable("number") Long number) throws Exception {
+  public void delete(@PathVariable("number") Long number){
     creditCardService.delete(number);
   }
 }
