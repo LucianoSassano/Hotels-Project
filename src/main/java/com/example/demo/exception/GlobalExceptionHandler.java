@@ -1,27 +1,41 @@
 package com.example.demo.exception;
 
+
+
+import org.hibernate.exception.ConstraintViolationException;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-  @ExceptionHandler({NotFoundException.class})
-  public static ResponseEntity notFoundException(NotFoundException ex) {
+
+  @ExceptionHandler(NotFoundException.class)
+  public static ResponseEntity<?> notFoundException(NotFoundException ex) {
+
     Map<String, String> error = new HashMap<>();
     String fieldName = "errorDescription";
     String errorMessage = ex.getMessage();
     error.put(fieldName, errorMessage);
+    
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public static ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+
+  public static ResponseEntity<?> methodArgumentNotValidException(
+      MethodArgumentNotValidException ex) {
+
     Map<String, String> errors = new HashMap<>();
     ex.getBindingResult()
         .getAllErrors()
@@ -31,6 +45,19 @@ public class GlobalExceptionHandler {
               String errorMessage = error.getDefaultMessage();
               errors.put(fieldName, errorMessage);
             });
+
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public static ResponseEntity<?> constraintViolationException(ConstraintViolationException ex) {
+
+    Map<String, String> error = new HashMap<>();
+
+    String fieldName = "errorDescription";
+    String errorMessage = ex.getSQLException().toString();
+    error.put(fieldName, errorMessage);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }
