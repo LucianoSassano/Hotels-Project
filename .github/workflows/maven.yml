@@ -24,7 +24,7 @@ jobs:
       run: mvn -B package --file pom.xml
       env:
         spring.datasource.url: jdbc:mysql://localhost:3306/testhotels
-        spring.datasource.username: test
+        spring.datasource.username: testCi
         spring.datasource.password: 1234
         spring.datasource.driver.class: com.mysql.jdbc.Driver
         spring.jpa.hibernate.ddl-auto: update
