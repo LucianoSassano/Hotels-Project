@@ -51,17 +51,17 @@ public class UserController {
 
   @PostMapping("")
   public ResponseEntity insert(@RequestBody @Valid UserDTO userNew) {
-    return ResponseEntity.ok().body(userService.insert(userNew));
+    return ResponseEntity.ok().body(UserDTO.generateInstanceFromUser(userService.insert(userNew)));
   }
 
   @PostMapping("/{dni}/card")
   public ResponseEntity insert(@PathVariable("dni") Integer dni, @RequestBody @Valid CardDTO card) {
-    return ResponseEntity.ok().body(userService.insertCard(card, dni));
+  return ResponseEntity.ok().body(CardDTO.generateInstanceFromEntity(userService.insertCard(card, dni)));
   }
 
   @PutMapping("")
   public ResponseEntity updateByDni(@RequestBody @Valid UserDTO toUpdate, Integer dni) {
-    return ResponseEntity.ok().body(userService.update(toUpdate, dni));
+    return ResponseEntity.ok().body(UserDTO.generateInstanceFromUser(userService.update(toUpdate, dni)));
   }
 
   @DeleteMapping("/{dni}")

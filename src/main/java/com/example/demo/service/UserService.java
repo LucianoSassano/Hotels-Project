@@ -1,15 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CardDTO;
-import com.example.demo.dto.UserCardsDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.model.CreditCard;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.UserExceptionMessages;
-import com.example.demo.util.UserUtils;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -24,11 +22,13 @@ public class UserService {
     this.creditCardService = creditCardService;
   }
 
-  public List<User> findAll() {return userRepository.findAll();}
+  public List<User> findAll() {
+    return userRepository.findAll();
+  }
 
-  public UserDTO insert(UserDTO userNew) {
+  public User insert(UserDTO userNew) {
     User toSave = User.generateInstanceFromDTO(userNew);
-    return UserDTO.generateInstanceFromUser(userRepository.save(toSave));
+    return userRepository.save(toSave);
   }
 
   public User findById(Long id) {
@@ -37,11 +37,10 @@ public class UserService {
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
-  public UserDTO update(UserDTO dataForUpdate, Integer dni) {
+  public User update(UserDTO dataForUpdate, Integer dni) {
     return userRepository
         .findByDni(dni)
-        .map(
-            user -> updateInstance(user,dataForUpdate))
+        .map(user -> updateInstance(user, dataForUpdate))
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
@@ -51,7 +50,7 @@ public class UserService {
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
-  public CardDTO insertCard(CardDTO card, Integer dni) {
+  public CreditCard insertCard(CardDTO card, Integer dni) {
     return creditCardService.insert(card, findByDni(dni).getId());
   }
 
@@ -62,11 +61,11 @@ public class UserService {
   public User findUserWithCardsByDni(Integer dni) {
     return findByDni(dni);
   }
-  public UserDTO updateInstance(User user,UserDTO data){
+
+  public User updateInstance(User user, UserDTO data) {
     User toUpdated = User.generateInstanceFromDTO(data);
     toUpdated.setId(user.getId());
     toUpdated.setIsDeleted(false);
-    userRepository.save(toUpdated);
-    return UserDTO.generateInstanceFromUser(toUpdated);
+    return userRepository.save(toUpdated);
   }
 }
