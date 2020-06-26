@@ -26,9 +26,6 @@ public class UserDTO implements Serializable {
   @NotNull(message = UserExceptionMessages.NOT_NULL)
   private String name;
 
-  @NotNull
-  private Long id;
-
   @NotNull(message = UserExceptionMessages.NOT_NULL)
   @Positive
   private Integer dni;
@@ -49,7 +46,6 @@ public class UserDTO implements Serializable {
 
   public static UserDTO generateInstanceFromUser(User adn) {
     return UserDTO.builder()
-        .id(adn.getId())
         .address(adn.getAddress())
         .email(adn.getEmail())
         .dni(adn.getDni())
