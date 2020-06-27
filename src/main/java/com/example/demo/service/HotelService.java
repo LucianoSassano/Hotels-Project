@@ -3,7 +3,10 @@ package com.example.demo.service;
 import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.model.Bedding;
+import com.example.demo.model.City;
 import com.example.demo.model.Hotel;
+import com.example.demo.model.Room;
 import com.example.demo.repository.HotelRepository;
 import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +20,16 @@ import java.util.stream.Collectors;
 public class HotelService {
 
   private final HotelRepository hotelRepository;
+  private final CityService cityService;
 
   public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
-    return new HotelDtoOutput(hotelRepository.save(Hotel.buildHotelEntity(hotelDtoInput)));
+
+    Hotel hotel = Hotel.buildHotelEntity(hotelDtoInput);
+    City city = cityService.getCity(hotelDtoInput.getCityId());
+
+    hotel.setCity(city);
+
+    return new HotelDtoOutput(hotelRepository.save(hotel));
   }
 
   public List<HotelDtoOutput> getAll() {
@@ -49,7 +59,12 @@ public class HotelService {
     hotelRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+
     Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
+
+    City city = cityService.getCity(hotelDtoInput.getCityId());
+
+    updatedHotel.setCity(city);
     updatedHotel.setId(id);
 
     return new HotelDtoOutput(hotelRepository.save(updatedHotel));

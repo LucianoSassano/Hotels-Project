@@ -37,7 +37,7 @@ public class UserController {
 
   @GetMapping("/{id}")
   public ResponseEntity getById(@PathVariable("id") Long id) {
-    return ResponseEntity.ok().body(userService.findById(id));
+    return ResponseEntity.ok().body(UserDTO.generateInstanceFromUser(userService.findById(id)));
   }
 
   @GetMapping("/{dni}/card")

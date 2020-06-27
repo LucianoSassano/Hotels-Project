@@ -3,6 +3,7 @@ package com.example.demo.dto;
 import com.example.demo.model.Country;
 import com.example.demo.model.Estate;
 import com.example.demo.util.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class CountryDto {
   @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
   private String name;
 
+  @JsonIgnore
   @NotNull(message = ErrorMessage.NOT_NULL)
   @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
   private List<Estate> states;

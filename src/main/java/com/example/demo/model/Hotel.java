@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -33,9 +35,9 @@ public class Hotel {
 
   private String address;
 
-  //    @ManyToOne
-  //    @JoinColumn(name = city_id)
-  //    private City city;
+  @ManyToOne
+  @JoinColumn(name = "city_id")
+  private City city;
 
   @Column(unique = true)
   private String email;
@@ -58,7 +60,7 @@ public class Hotel {
     return Hotel.builder()
         .name(hotelDtoInput.getName())
         .address(hotelDtoInput.getAddress())
-        //              .city(hotelDtoInput.getCityId())
+        .city(City.builder().id(hotelDtoInput.getCityId()).build())
         .email(hotelDtoInput.getEmail())
         .phone(hotelDtoInput.getPhone())
         .roomCapacity(hotelDtoInput.getRoomCapacity())
