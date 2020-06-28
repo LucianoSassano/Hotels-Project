@@ -49,6 +49,18 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
+  @ExceptionHandler(DuplicateEntryException.class)
+  public static ResponseEntity<?> duplicateEntryException(DuplicateEntryException ex) {
+
+    Map<String, String> error = new HashMap<>();
+
+    String fieldName = "errorDescription";
+    String errorMessage = ex.getMessage();
+    error.put(fieldName, errorMessage);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
   @ExceptionHandler(ConstraintViolationException.class)
   public static ResponseEntity<?> constraintViolationException(ConstraintViolationException ex) {
 

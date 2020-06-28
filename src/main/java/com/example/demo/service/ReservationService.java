@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.reservation.ReservationDtoInput;
-import com.example.demo.dto.reservation.ReservationDtoOutput;
+import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Hotel;
 import com.example.demo.model.Reservation;
@@ -10,14 +9,17 @@ import com.example.demo.model.Room;
 import com.example.demo.model.User;
 import com.example.demo.repository.ReservationRepository;
 
+import com.example.demo.util.Constants;
 import com.example.demo.util.ErrorMessage;
-import com.example.demo.util.UserUtils;
+import com.example.demo.util.SharedUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,27 +30,22 @@ public class ReservationService {
   private final RoomService roomService;
   private final UserService userService;
 
-  public ReservationDtoOutput add(ReservationDtoInput reservationDtoInput) {
+  public Reservation add(ReservationDtoInput reservationDtoInput) {
 
     Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
     Room room = roomService.getById(reservationDtoInput.getRoomId());
     Hotel hotel = room.getHotel();
     User user = userService.findById(reservationDtoInput.getUserId());
-    final LocalDateTime now = LocalDateTime.now();
-    reservation.setCreatedAt(now);
-    reservation.setUpdatedAt(now);
     reservation.setRoom(room);
     reservation.setHotel(hotel);
     reservation.setUser(user);
 
-    return new ReservationDtoOutput(reservationRepository.save(reservation));
+    return (reservationRepository.save(reservation));
   }
 
-  public List<ReservationDtoOutput> getAll() {
+  public List<Reservation> getAll() {
 
-    return reservationRepository.findAll().stream()
-        .map(ReservationDtoOutput::new)
-        .collect(Collectors.toList());
+    return reservationRepository.findAll();
   }
 
   public Reservation getById(Long id) {
@@ -57,18 +54,14 @@ public class ReservationService {
         .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
   }
 
-  public List<ReservationDtoOutput> getByHotelId(Long hotelId) {
+  public List<Reservation> getAllByHotelId(Long hotelId) {
 
-    return reservationRepository.findAllByHotelId(hotelId).stream()
-        .map(ReservationDtoOutput::new)
-        .collect(Collectors.toList());
+    return reservationRepository.findAllByHotelId(hotelId);
   }
 
-  public List<ReservationDtoOutput> getByRoomId(Long roomId) {
+  public List<Reservation> getAllByRoomId(Long roomId) {
 
-    return reservationRepository.findAllByRoomId(roomId).stream()
-        .map(ReservationDtoOutput::new)
-        .collect(Collectors.toList());
+    return reservationRepository.findAllByRoomId(roomId);
   }
 
   public Reservation delete(Long id) {
@@ -82,27 +75,60 @@ public class ReservationService {
     return reservationToDelete;
   }
 
-  public ReservationDtoOutput replace(Long id, ReservationDtoInput reservationDtoInput) {
+  public Reservation replace(Long id, ReservationDtoInput reservationDtoInput) {
 
-    Reservation reservationToUpdate =
-        reservationRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+    reservationRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
     Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-    LocalDateTime createdAt = reservationToUpdate.getCreatedAt();
     Room room = roomService.getById(reservationDtoInput.getRoomId());
     Hotel hotel = room.getHotel();
     User user = userService.findById(reservationDtoInput.getUserId());
+
     reservation.setId(id);
-    reservation.setCreatedAt(createdAt);
-    reservation.setUpdatedAt(LocalDateTime.now());
     reservation.setRoom(room);
     reservation.setHotel(hotel);
     reservation.setUser(user);
 
     reservationRepository.save(reservation);
 
-    return new ReservationDtoOutput(reservation);
+    return reservation;
+  }
+
+  public Reservation partialUpdate(Long id, UncheckedReservation uncheckedReservation) {
+    Reservation reservationToUpdate =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
+
+    Optional.ofNullable(uncheckedReservation.getRoomId())
+        .ifPresent(
+            roomId -> {
+              reservationToUpdate.setRoom(roomService.getById(roomId));
+              reservationToUpdate.setHotel(reservationToUpdate.getRoom().getHotel());
+            });
+
+    Optional.ofNullable(uncheckedReservation.getUserId())
+        .ifPresent(userId -> reservationToUpdate.setUser(userService.findById(userId)));
+    Optional.ofNullable(uncheckedReservation.getCheckIn())
+        .ifPresent(
+            checkin ->
+                reservationToUpdate.setCheckIn(
+                    LocalDate.parse(
+                        SharedUtils.adjustLocalDate(checkin),
+                        DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
+    Optional.ofNullable(uncheckedReservation.getCheckOut())
+        .ifPresent(
+            checkOut ->
+                reservationToUpdate.setCheckOut(
+                    LocalDate.parse(
+                        SharedUtils.adjustLocalDate(checkOut),
+                        DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
+    Optional.ofNullable(uncheckedReservation.getFinalPrice())
+        .ifPresent(reservationToUpdate::setFinalPrice);
+    Optional.ofNullable(uncheckedReservation.getIsPaid()).ifPresent(reservationToUpdate::setIsPaid);
+
+    return reservationRepository.save(reservationToUpdate);
   }
 }

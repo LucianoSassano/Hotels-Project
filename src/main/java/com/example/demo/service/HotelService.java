@@ -1,19 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
-import com.example.demo.dto.hotel.HotelDtoOutput;
+import com.example.demo.dto.hotel.UncheckedHotel;
+import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.Bedding;
 import com.example.demo.model.City;
 import com.example.demo.model.Hotel;
-import com.example.demo.model.Room;
 import com.example.demo.repository.HotelRepository;
 import com.example.demo.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,19 +22,28 @@ public class HotelService {
   private final HotelRepository hotelRepository;
   private final CityService cityService;
 
-  public HotelDtoOutput add(HotelDtoInput hotelDtoInput) {
-
-    Hotel hotel = Hotel.buildHotelEntity(hotelDtoInput);
+  @Transactional
+  public Hotel add(HotelDtoInput hotelDtoInput) {
+    Hotel hotelToAdd = Hotel.buildHotelEntity(hotelDtoInput);
     City city = cityService.getCity(hotelDtoInput.getCityId());
-
-    hotel.setCity(city);
-
-    return new HotelDtoOutput(hotelRepository.save(hotel));
+    hotelToAdd.setCity(city);
+    hotelRepository
+        .findHotelByEmail(hotelDtoInput.getEmail())
+        .ifPresent(
+            hotel -> {
+              if (hotel.getIsDeleted()) {
+                hotelRepository.restoreHotelById(hotel.getId());
+                hotelToAdd.setId(hotel.getId());
+              } else
+                throw new DuplicateEntryException(
+                    ErrorMessage.DUPLICATE_ENTRY + "email: " + hotelToAdd.getEmail());
+            });
+    return hotelRepository.save(hotelToAdd);
   }
 
-  public List<HotelDtoOutput> getAll() {
+  public List<Hotel> getAll() {
 
-    return hotelRepository.findAll().stream().map(HotelDtoOutput::new).collect(Collectors.toList());
+    return hotelRepository.findAll();
   }
 
   public Hotel getById(Long id) {
@@ -54,7 +63,7 @@ public class HotelService {
     return hotelToDelete;
   }
 
-  public HotelDtoOutput replace(Long id, HotelDtoInput hotelDtoInput) {
+  public Hotel replace(Long id, HotelDtoInput hotelDtoInput) {
 
     hotelRepository
         .findById(id)
@@ -67,6 +76,24 @@ public class HotelService {
     updatedHotel.setCity(city);
     updatedHotel.setId(id);
 
-    return new HotelDtoOutput(hotelRepository.save(updatedHotel));
+    return hotelRepository.save(updatedHotel);
+  }
+
+  public Hotel partialUpdate(Long id, UncheckedHotel uncheckedHotel) {
+    Hotel hotelToUpdate =
+        hotelRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+
+    Optional.ofNullable(uncheckedHotel.getAddress()).ifPresent(hotelToUpdate::setAddress);
+    Optional.ofNullable(uncheckedHotel.getEmail()).ifPresent(hotelToUpdate::setEmail);
+    Optional.ofNullable(uncheckedHotel.getName()).ifPresent(hotelToUpdate::setName);
+    Optional.ofNullable(uncheckedHotel.getPhone()).ifPresent(hotelToUpdate::setPhone);
+    Optional.ofNullable(uncheckedHotel.getRating()).ifPresent(hotelToUpdate::setRating);
+    Optional.ofNullable(uncheckedHotel.getRoomCapacity()).ifPresent(hotelToUpdate::setRoomCapacity);
+    Optional.ofNullable(uncheckedHotel.getCityId())
+        .ifPresent(cityId -> hotelToUpdate.setCity(cityService.getCity(cityId)));
+
+    return hotelRepository.save(hotelToUpdate);
   }
 }

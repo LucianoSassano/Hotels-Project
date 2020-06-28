@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,7 +20,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -27,6 +32,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE rooms SET is_deleted = true WHERE room_id=?")
+@Where(clause = "is_deleted = false")
 public class Room {
 
   @Id
@@ -51,6 +58,15 @@ public class Room {
 
   @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
+
+  @NotNull private Boolean isDeleted;
+
+  @PrePersist
+  @PreUpdate
+  void preInsert() {
+
+    if (this.isDeleted == null) this.isDeleted = false;
+  }
 
   public static Room buildRoomEntity(RoomDtoInput roomDtoInput) {
 
