@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
+import com.example.demo.dto.hotel.UncheckedHotel;
 import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Hotel;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +68,22 @@ public class HotelService {
     updatedHotel.setId(id);
 
     return hotelRepository.save(updatedHotel);
+  }
+
+  public Hotel partialUpdate(Long id, UncheckedHotel uncheckedHotel) {
+    Hotel hotelToUpdate =
+        hotelRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
+
+    Optional.ofNullable(uncheckedHotel.getAddress()).ifPresent(hotelToUpdate::setAddress);
+    Optional.ofNullable(uncheckedHotel.getEmail()).ifPresent(hotelToUpdate::setEmail);
+    Optional.ofNullable(uncheckedHotel.getName()).ifPresent(hotelToUpdate::setName);
+    Optional.ofNullable(uncheckedHotel.getPhone()).ifPresent(hotelToUpdate::setPhone);
+    Optional.ofNullable(uncheckedHotel.getRating()).ifPresent(hotelToUpdate::setRating);
+    Optional.ofNullable(uncheckedHotel.getRoomCapacity()).ifPresent(hotelToUpdate::setRoomCapacity);
+    //      Optional.ofNullable(uncheckedHotel.getCityId()).ifPresent(hotelToUpdate::setCityId);
+
+    return hotelRepository.save(hotelToUpdate);
   }
 }

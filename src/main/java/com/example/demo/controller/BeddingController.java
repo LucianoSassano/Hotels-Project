@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.service.BeddingService;
 import com.example.demo.util.BeddingUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,5 +50,11 @@ public class BeddingController {
   @DeleteMapping(path = "/{id}")
   public ResponseEntity<BeddingDto> delete(@PathVariable Long id) {
     return ResponseEntity.ok(new BeddingDto(beddingService.delete(id)));
+  }
+
+  @PatchMapping(path = "/{id}")
+  public ResponseEntity<BeddingDto> partialUpdate(
+      @PathVariable Long id, @Valid @RequestBody UncheckedBedding uncheckedBedding) {
+    return ResponseEntity.ok(new BeddingDto(beddingService.partialUpdate(id, uncheckedBedding)));
   }
 }

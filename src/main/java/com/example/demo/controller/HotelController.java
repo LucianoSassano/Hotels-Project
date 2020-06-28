@@ -2,12 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
+import com.example.demo.dto.hotel.UncheckedHotel;
 import com.example.demo.service.HotelService;
 import com.example.demo.util.HotelUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,5 +51,11 @@ public class HotelController {
   @DeleteMapping(path = "/{id}")
   public ResponseEntity<HotelDtoOutput> delete(@PathVariable Long id) {
     return ResponseEntity.ok(new HotelDtoOutput(hotelService.delete(id)));
+  }
+
+  @PatchMapping(path = "/{id}")
+  public ResponseEntity<HotelDtoOutput> partialUpdate(
+      @PathVariable Long id, @Valid @RequestBody UncheckedHotel uncheckedHotel) {
+    return ResponseEntity.ok(new HotelDtoOutput(hotelService.partialUpdate(id, uncheckedHotel)));
   }
 }
