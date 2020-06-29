@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.CardDTO;
 import com.example.demo.dto.UserCardsDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserDtoInsert;
 import com.example.demo.service.CreditCardService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.UserUtils;
@@ -50,7 +51,7 @@ public class UserController {
   }
 
   @PostMapping("")
-  public ResponseEntity insert(@RequestBody @Valid UserDTO userNew) {
+  public ResponseEntity insert(@RequestBody @Valid UserDtoInsert userNew) {
     return ResponseEntity.ok().body(UserDTO.generateInstanceFromUser(userService.insert(userNew)));
   }
 
@@ -65,7 +66,8 @@ public class UserController {
   }
 
   @DeleteMapping("/{dni}")
-  public void delete(@PathVariable("dni") Integer dni) {
-    userService.delete(dni);
+  public ResponseEntity delete(@PathVariable("dni") Integer dni) {
+
+    return ResponseEntity.ok().body(UserDTO.generateInstanceFromUser(userService.delete(dni)));
   }
 }

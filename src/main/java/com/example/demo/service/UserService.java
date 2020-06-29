@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CardDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserDtoInsert;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.CreditCard;
 import com.example.demo.model.User;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Data
 public class UserService {
   final UserRepository userRepository;
   final CreditCardService creditCardService;
@@ -26,8 +26,8 @@ public class UserService {
     return userRepository.findAll();
   }
 
-  public User insert(UserDTO userNew) {
-    User toSave = User.generateInstanceFromDTO(userNew);
+  public User insert(UserDtoInsert userNew) {
+    User toSave = User.generateInstanceFromDtoInsert(userNew);
     return userRepository.save(toSave);
   }
 
@@ -54,8 +54,10 @@ public class UserService {
     return creditCardService.insert(card, findByDni(dni).getId());
   }
 
-  public void delete(Integer dni) {
-    userRepository.deleteById(findByDni(dni).getId());
+  public User delete(Integer dni) {
+    User toDelete = findByDni(dni);
+    userRepository.deleteById(toDelete.getId());
+    return toDelete;
   }
 
   public User findUserWithCardsByDni(Integer dni) {
