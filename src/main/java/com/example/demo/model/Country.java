@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
-
 import com.example.demo.dto.CountryDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,32 +22,31 @@ import java.util.List;
 @Where(clause = "is_deleted = false ")
 public class Country {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "country")
-    private List<Estate> estates;
+  private String name;
 
-    @NotNull
-    private Boolean isDeleted;
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "country")
+  private List<Estate> estates;
 
-    @PrePersist
-    @PreUpdate
-    void preInsert() {
-        if (this.isDeleted == null) {
-            this.isDeleted = false;
-        }
+  @NotNull private Boolean isDeleted;
+
+  @PrePersist
+  @PreUpdate
+  void preInsert() {
+    if (this.isDeleted == null) {
+      this.isDeleted = false;
     }
+  }
 
-    public static Country buildCountryEntity(CountryDto countryDto) {
-        return Country.builder()
-                .id(countryDto.getId())
-                .name(countryDto.getName())
-                .estates(countryDto.getStates())
-                .build();
-    }
-
-
+  public static Country buildCountryEntity(CountryDto countryDto) {
+    return Country.builder()
+        .id(countryDto.getId())
+        .name(countryDto.getName())
+        .estates(countryDto.getStates())
+        .build();
+  }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.CityDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,8 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,39 +23,38 @@ import javax.validation.constraints.NotNull;
 @Where(clause = "is_deleted = false ")
 public class City {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private Long id;
+  private String name;
 
-    private String name;
+  private Integer zip_code;
 
-    private Integer zip_code;
+  @ManyToOne
+  @JoinColumn(name = "state_id")
+  private Estate state;
 
-    @ManyToOne
-    @JoinColumn(name = "state_id")
-    private Estate state;
+  @NotNull private Boolean isDeleted;
 
-    @NotNull
-    private Boolean isDeleted;
+  @JsonIgnore
+  @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+  private List<Hotel> hotel;
 
-    @PrePersist
-    @PreUpdate
-    void preInsert() {
-        if (this.isDeleted == null) {
-            this.isDeleted = false;
-        }
+  @PrePersist
+  @PreUpdate
+  void preInsert() {
+    if (this.isDeleted == null) {
+      this.isDeleted = false;
     }
+  }
 
-
-    public static City buildCityEntity(CityDto cityDto) {
-        return City.builder()
-                .name(cityDto.getName())
-                .id(cityDto.getId())
-                .state(cityDto.getState())
-                .zip_code(cityDto.getZipCode())
-                .build();
-    }
-
-
+  public static City buildCityEntity(CityDto cityDto) {
+    return City.builder()
+        .name(cityDto.getName())
+        .id(cityDto.getId())
+        .state(cityDto.getState())
+        .zip_code(cityDto.getZipCode())
+        .build();
+  }
 }

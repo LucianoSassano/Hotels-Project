@@ -34,18 +34,16 @@ public class UserService {
     return UserDTO.generateInstanceFromUser(userRepository.save(toSave));
   }
 
-  public UserDTO findById(Long id) {
+  public User findById(Long id) {
     return userRepository
         .findById(id)
-        .map(UserDTO::generateInstanceFromUser)
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
   public UserDTO update(UserDTO dataForUpdate, Integer dni) {
     return userRepository
         .findByDni(dni)
-        .map(
-            user -> updateInstance(user,dataForUpdate))
+        .map(user -> updateInstance(user, dataForUpdate))
         .orElseThrow(() -> new NotFoundException(UserExceptionMessages.USER_NOT_FOUND));
   }
 
@@ -67,7 +65,8 @@ public class UserService {
     User user = findByDni(dni);
     return UserCardsDTO.generateInstanceByUser(user);
   }
-  public UserDTO updateInstance(User user,UserDTO data){
+
+  public UserDTO updateInstance(User user, UserDTO data) {
     User toUpdated = User.generateInstanceFromDTO(data);
     toUpdated.setId(user.getId());
     toUpdated.setIsDeleted(false);
