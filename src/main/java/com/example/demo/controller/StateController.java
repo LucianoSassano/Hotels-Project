@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.EstateDto;
+import com.example.demo.dto.state.EstateInputDto;
+import com.example.demo.dto.state.EstateOutputDto;
 import com.example.demo.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +19,19 @@ public class StateController {
     return ResponseEntity.ok().body(stateService.listAllStates());
   }
 
-  @GetMapping(path = "/{id}")
+  @GetMapping(path = "{id}")
   public ResponseEntity getStateById(@PathVariable Long id) {
 
-    return ResponseEntity.ok().body(stateService.getById(id));
+    return ResponseEntity.ok().body(new EstateOutputDto(stateService.getById(id)));
   }
 
   @PostMapping
-  public ResponseEntity createState(@RequestBody EstateDto estateDto) {
-
+  public ResponseEntity createState(@RequestBody EstateInputDto estateDto) {
     return ResponseEntity.ok().body(stateService.add(estateDto));
   }
 
-  @PutMapping(path = "/{id}")
-  public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateDto estateDto) {
+  @PutMapping(path = "{id}")
+  public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateInputDto estateDto) {
 
     return ResponseEntity.ok().body(stateService.updateState(id, estateDto));
   }

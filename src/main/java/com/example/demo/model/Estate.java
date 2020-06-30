@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
-
-import com.example.demo.dto.EstateDto;
+import com.example.demo.dto.state.EstateInputDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,38 +22,35 @@ import java.util.List;
 @Where(clause = "is_deleted = false ")
 public class Estate {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
+  @Column(unique = true)
+  private String name;
 
+  @ManyToOne
+  @JoinColumn(name = "country_id")
+  private Country country;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "state")
-    private List<City> cities;
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "state")
+  private List<City> cities;
 
-    @NotNull
-    private Boolean isDeleted;
+  @NotNull private Boolean isDeleted;
 
-    @PrePersist
-    @PreUpdate
-    void preInsert() {
-        if (this.isDeleted == null) {
-            this.isDeleted = false;
-        }
+  @PrePersist
+  @PreUpdate
+  void preInsert() {
+    if (this.isDeleted == null) {
+      this.isDeleted = false;
     }
+  }
 
-    public static Estate buildEstateEntity(EstateDto estateDto) {
-        return Estate.builder()
-                .id(estateDto.getId())
-                .name(estateDto.getName())
-                .country(estateDto.getCountry())
-                .cities(estateDto.getCities())
-                .build();
-    }
+  public static Estate buildEstateEntity(EstateInputDto estateInputDto) {
 
-
+    return Estate.builder()
+        .name(estateInputDto.getName())
+        .country(Country.builder().id(estateInputDto.getCountryId()).build())
+        .build();
+  }
 }

@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CountryDto;
+import com.example.demo.dto.country.CountryInputDto;
+import com.example.demo.dto.country.CountryOutputDto;
 import com.example.demo.exception.notFoundException;
 import com.example.demo.model.Country;
 import com.example.demo.repository.CountryRepository;
 import com.example.demo.util.ErrorMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,37 +14,47 @@ import java.util.stream.Collectors;
 @Service
 public class CountryService {
 
-    @Autowired
-    private CountryRepository countryRepository;
+  final CountryRepository countryRepository;
 
-    public List<CountryDto> listAllCountries() {
-        List<CountryDto> countryDtoList = countryRepository.findAll()
-                .stream()
-                .map(CountryDto::new).collect(Collectors.toList());
+  public CountryService(CountryRepository countryRepository) {
+    this.countryRepository = countryRepository;
+  }
 
-        return countryDtoList;
-    }
+  public List<CountryOutputDto> listAllCountries() {
 
-    public CountryDto add(CountryDto countryDto) {
-        return new CountryDto(countryRepository.save(Country.buildCountryEntity(countryDto)));
-    }
+    return countryRepository.findAll().stream()
+        .map(CountryOutputDto::new)
+        .collect(Collectors.toList());
+  }
 
-    public Country getById(Long id) {
+  public CountryOutputDto add(CountryInputDto countryDto) {
+    Country country = Country.buildCountryEntity(countryDto);
 
-        return countryRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
+    return new CountryOutputDto((countryRepository.save(country)));
+  }
 
-    }
+  public Country getById(Long id) {
 
-    public Country updateCountry(Long id, CountryDto countryDto) {
-        countryRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
-        Country updatedCountry = Country.buildCountryEntity(countryDto);
-        updatedCountry.setId(id);
-        return countryRepository.save(updatedCountry);
-    }
+    return countryRepository
+        .findById(id)
+        .orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
+  }
 
-    public Country deleteCountryById(Long id) {
-        Country countryToDelete = countryRepository.findById(id).orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
-        countryRepository.deleteById(id);
-        return countryToDelete;
-    }
+  public CountryOutputDto updateCountry(Long id, CountryInputDto countryDto) {
+    countryRepository
+        .findById(id)
+        .orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
+    Country updatedCountry = Country.buildCountryEntity(countryDto);
+    updatedCountry.setId(id);
+    return new CountryOutputDto(countryRepository.save(updatedCountry));
+  }
+
+  public Country deleteCountryById(Long id) {
+    Country countryToDelete =
+        countryRepository
+            .findById(id)
+            .orElseThrow(() -> new notFoundException(ErrorMessage.COUNTRY_NOT_FOUND));
+    countryRepository.deleteById(id);
+    return countryToDelete;
+  }
 }
