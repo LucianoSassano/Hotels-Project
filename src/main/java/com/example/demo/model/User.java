@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 import javax.persistence.CascadeType;
@@ -24,6 +23,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -33,8 +33,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
-@SQLInsert(sql= "INSERT INTO testhotels.users(address, create_at, dni, email, is_deleted, name, phone, rol, update_at)VALUES(?,?,?,?,?,?,?,?,?)" +
-        "ON DUPLICATE KEY UPDATE is_deleted = false")
 @Where(clause = "is_deleted = false")
 public class User {
   @Id
@@ -58,14 +56,16 @@ public class User {
   private String email;
   private Long phone;
 
-
   @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime createAt;
 
- @UpdateTimestamp private LocalDateTime updateAt;
+  @UpdateTimestamp private LocalDateTime updateAt;
 
   private Boolean isDeleted;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Reservation> reservations;
 
   @PrePersist
   void preInsert() {

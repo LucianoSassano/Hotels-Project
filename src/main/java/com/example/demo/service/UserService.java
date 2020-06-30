@@ -8,7 +8,6 @@ import com.example.demo.model.CreditCard;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.UserExceptionMessages;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

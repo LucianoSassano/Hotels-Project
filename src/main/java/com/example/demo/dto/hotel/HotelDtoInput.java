@@ -27,9 +27,9 @@ public class HotelDtoInput {
   @Size(min = 1, max = 50, message = ErrorMessage.INVALID_STRING_SIZE)
   private String address;
 
-  //    @NotNull(message = "cityId cannot be null")
-  //    @Positive(message = "cityId must be a positive number")
-  //    private Long cityId;
+  @NotNull(message = "cityId cannot be null")
+  @Positive(message = "cityId must be a positive number")
+  private Long cityId;
 
   @NotBlank(message = ErrorMessage.NOT_BLANK)
   @Email(message = ErrorMessage.INVALID_EMAIL)

@@ -4,6 +4,7 @@ import com.example.demo.model.City;
 import com.example.demo.model.Country;
 import com.example.demo.model.Estate;
 import com.example.demo.util.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class EstateDto {
   @NotNull(message = ErrorMessage.NOT_NULL)
   private Country country;
 
+  @JsonIgnore
   @NotNull(message = ErrorMessage.NOT_NULL)
   @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
   private List<City> cities;
