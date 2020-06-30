@@ -9,6 +9,8 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.UserExceptionMessages;
 import org.springframework.stereotype.Service;
+
+import javax.smartcardio.Card;
 import java.util.List;
 
 @Service
