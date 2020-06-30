@@ -1,13 +1,10 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.example.demo.controller.CityController;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
-class DemoApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+@RunWith(SpringRunner.class)
+@WebMvcTest(CityController.class)
+class DemoApplicationTests {}

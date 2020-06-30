@@ -43,9 +43,10 @@ public class Reservation {
   @Column(name = "reservation_id")
   private Long id;
 
-  // @ManyToOne
-  // @JoinColumn("user_id")
-  //    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
   @ManyToOne
   @JoinColumn(name = "hotel_id")
   private Hotel hotel;
@@ -79,6 +80,7 @@ public class Reservation {
   public static Reservation buildReservationEntity(ReservationDtoInput reservationDtoInput) {
     return Reservation.builder()
         .room(Room.builder().id(reservationDtoInput.getRoomId()).build())
+        .user(User.builder().id(reservationDtoInput.getUserId()).build())
         .checkIn(
             LocalDate.parse(
                 SharedUtils.adjustLocalDate(reservationDtoInput.getCheckIn()),

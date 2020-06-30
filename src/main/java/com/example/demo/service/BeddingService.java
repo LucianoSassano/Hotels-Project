@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.BeddingDtoInput;
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Bedding;
 import com.example.demo.repository.BeddingRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +18,8 @@ public class BeddingService {
 
   private final BeddingRepository beddingRepository;
 
-  public Bedding add(BeddingDto beddingDto) {
-    return beddingRepository.save(Bedding.buildBeddingEntity(beddingDto));
+  public Bedding add(BeddingDtoInput beddingDtoInput) {
+    return beddingRepository.save(Bedding.buildBeddingEntity(beddingDtoInput));
   }
 
   public List<Bedding> getAll() {
@@ -42,14 +44,28 @@ public class BeddingService {
     return beddingToDelete;
   }
 
-  public Bedding replace(Long id, BeddingDto beddingDto) {
+  public Bedding replace(Long id, BeddingDtoInput beddingDtoInput) {
 
     beddingRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
-    Bedding updatedBedding = Bedding.buildBeddingEntity(beddingDto);
+    Bedding updatedBedding = Bedding.buildBeddingEntity(beddingDtoInput);
     updatedBedding.setId(id);
 
     return beddingRepository.save(updatedBedding);
+  }
+
+  public Bedding partialUpdate(Long id, UncheckedBedding uncheckedBedding) {
+    Bedding beddingToUpdate =
+        beddingRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
+
+    Optional.ofNullable(uncheckedBedding.getDescription())
+        .ifPresent(beddingToUpdate::setDescription);
+    Optional.ofNullable(uncheckedBedding.getMaxCapacity())
+        .ifPresent(beddingToUpdate::setMaxCapacity);
+
+    return beddingRepository.save(beddingToUpdate);
   }
 }

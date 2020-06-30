@@ -2,13 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
-import com.example.demo.model.Reservation;
+import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.service.ReservationService;
 import com.example.demo.util.ReservationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,5 +65,12 @@ public class ReservationController {
   @DeleteMapping(path = "/{id}")
   public ResponseEntity<ReservationDtoOutput> delete(@PathVariable Long id) {
     return ResponseEntity.ok(new ReservationDtoOutput(reservationService.delete(id)));
+  }
+
+  @PatchMapping(path = "/{id}")
+  public ResponseEntity<ReservationDtoOutput> partialUpdate(
+      @PathVariable Long id, @Valid @RequestBody UncheckedReservation uncheckedReservation) {
+    return ResponseEntity.ok(
+        new ReservationDtoOutput(reservationService.partialUpdate(id, uncheckedReservation)));
   }
 }

@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.BeddingDtoInput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,11 +51,11 @@ public class Bedding {
     if (this.isDeleted == null) this.isDeleted = false;
   }
 
-  public static Bedding buildBeddingEntity(BeddingDto beddingDto) {
+  public static Bedding buildBeddingEntity(BeddingDtoInput beddingDtoInput) {
 
     return Bedding.builder()
-        .description(beddingDto.getDescription())
-        .maxCapacity(beddingDto.getMaxCapacity())
+        .description(beddingDtoInput.getDescription())
+        .maxCapacity(beddingDtoInput.getMaxCapacity())
         .build();
   }
 }

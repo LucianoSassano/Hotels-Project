@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.room.RoomDtoInput;
-import com.example.demo.dto.room.RoomDtoOutput;
+import com.example.demo.dto.room.UncheckedRoom;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Bedding;
 import com.example.demo.model.Hotel;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +75,22 @@ public class RoomService {
     updatedRoom.setId(id);
 
     return roomRepository.save(updatedRoom);
+  }
+
+  public Room partialUpdate(Long id, UncheckedRoom uncheckedRoom) {
+    Room roomToUpdate =
+        roomRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.ROOM_NOT_FOUND));
+
+    Optional.ofNullable(uncheckedRoom.getBeddingId())
+        .ifPresent(beddingId -> roomToUpdate.setBedding(beddingService.getById(beddingId)));
+    Optional.ofNullable(uncheckedRoom.getHotelId())
+        .ifPresent(hotelId -> roomToUpdate.setHotel(hotelService.getById(hotelId)));
+    Optional.ofNullable(uncheckedRoom.getCategory()).ifPresent(roomToUpdate::setCategory);
+    Optional.ofNullable(uncheckedRoom.getDailyRate()).ifPresent(roomToUpdate::setDailyRate);
+    Optional.ofNullable(uncheckedRoom.getStatus()).ifPresent(roomToUpdate::setStatus);
+
+    return roomRepository.save(roomToUpdate);
   }
 }
