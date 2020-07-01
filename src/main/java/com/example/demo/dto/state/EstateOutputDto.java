@@ -16,9 +16,12 @@ public class EstateOutputDto {
 
   private Long countryId;
 
+  private Boolean isDeleted;
+
   public EstateOutputDto(Estate estate) {
     this.id = estate.getId();
     this.name = estate.getName();
     this.countryId = estate.getCountry().getId();
+    this.isDeleted = estate.getIsDeleted();
   }
 }

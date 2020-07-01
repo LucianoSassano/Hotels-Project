@@ -1,6 +1,7 @@
 package com.example.demo.dto.hotel;
 
 import com.example.demo.dto.room.RoomDtoOutput;
+import com.example.demo.model.City;
 import com.example.demo.model.Hotel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -21,7 +22,7 @@ public class HotelDtoOutput {
 
   private String address;
 
-  //    private CityDto cityDto;
+  private City city;
 
   private String email;
 
@@ -37,7 +38,7 @@ public class HotelDtoOutput {
 
     this.name = hotel.getName();
     this.address = hotel.getAddress();
-    //      this.cityDto = new cityDto(hotel.getCity());
+    this.city = hotel.getCity();
     this.email = hotel.getEmail();
     this.phone = hotel.getPhone();
     this.roomCapacity = hotel.getRoomCapacity();

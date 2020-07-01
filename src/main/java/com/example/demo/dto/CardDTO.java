@@ -15,7 +15,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardDTO implements Serializable {
-  /*@NotBlank(message = UserExceptionMessages.NOT_BLANK) this annotation is generating problems*/
   @NotNull(message = UserExceptionMessages.NOT_NULL)
   private Long number;
 

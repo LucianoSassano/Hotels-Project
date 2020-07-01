@@ -23,6 +23,10 @@ public class ReservationDtoInput {
   @Positive(message = ErrorMessage.NOT_NEGATIVE)
   private Long roomId;
 
+  @NotNull(message = ErrorMessage.NOT_NULL)
+  @Positive(message = ErrorMessage.NOT_NEGATIVE)
+  private Long userId;
+
   @NotBlank(message = ErrorMessage.NOT_BLANK)
   @Pattern(message = ErrorMessage.INVALID_DATE_FORMAT, regexp = Constants.DATE_VALIDATION_REGEX)
   private String checkIn;

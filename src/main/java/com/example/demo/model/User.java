@@ -21,6 +21,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -49,14 +50,16 @@ public class User {
   private String email;
   private Long phone;
 
-
   @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime createAt;
 
- @UpdateTimestamp private LocalDateTime updateAt;
+  @UpdateTimestamp private LocalDateTime updateAt;
 
   private Boolean isDeleted;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Reservation> reservations;
 
   @PrePersist
   void preInsert() {

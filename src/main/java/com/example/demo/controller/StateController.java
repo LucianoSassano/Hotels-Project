@@ -27,18 +27,18 @@ public class StateController {
 
   @PostMapping
   public ResponseEntity createState(@RequestBody EstateInputDto estateDto) {
-    return ResponseEntity.ok().body(stateService.add(estateDto));
+    return ResponseEntity.ok().body(new EstateOutputDto(stateService.add(estateDto)));
   }
 
   @PutMapping(path = "{id}")
   public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateInputDto estateDto) {
 
-    return ResponseEntity.ok().body(stateService.updateState(id, estateDto));
+    return ResponseEntity.ok().body(new EstateOutputDto(stateService.updateState(id, estateDto)));
   }
 
   @DeleteMapping(path = "/{id}")
   public ResponseEntity deleteState(@PathVariable Long id) {
 
-    return ResponseEntity.ok().body(stateService.delete(id));
+    return ResponseEntity.ok().body(new EstateOutputDto(stateService.delete(id)));
   }
 }
