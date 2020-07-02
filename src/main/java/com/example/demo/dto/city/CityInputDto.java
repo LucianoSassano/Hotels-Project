@@ -1,12 +1,10 @@
 package com.example.demo.dto.city;
 
 import com.example.demo.model.City;
-import com.example.demo.model.Estate;
 import com.example.demo.util.ErrorMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
