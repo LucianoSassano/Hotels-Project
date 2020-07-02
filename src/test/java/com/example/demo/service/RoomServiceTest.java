@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.dto.room.RoomDtoInput;
+import com.example.demo.dto.room.UncheckedRoom;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Bedding;
 import com.example.demo.model.Category;
@@ -41,7 +43,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("add method working properly")
-  void addTestOk() {
+  void add_CompleteEntity_Ok() {
 
     List<Reservation> mockReservations = new ArrayList<>();
     Hotel mockHotel = new Hotel();
@@ -81,7 +83,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("getAll method working properly")
-  void getAllTestOk() {
+  void getAll_Empty_Ok() {
 
     List<Room> response = new ArrayList<>();
 
@@ -92,7 +94,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("getById method working properly")
-  void getByIdTestOk() {
+  void getById_ExistingId_Ok() {
     List<Reservation> mockReservations = new ArrayList<>();
     Hotel mockHotel = new Hotel();
     Bedding mockBedding = new Bedding();
@@ -116,7 +118,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("getById method throwing notFoundException")
-  void getByIdTestNotFoundException() {
+  void getById_NonExistingId_NotFoundExceptionThrown() {
 
     when(mockRoomRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
@@ -125,7 +127,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("delete method working properly")
-  void deleteTestOk() {
+  void delete_ExistingId_Ok() {
     List<Reservation> mockReservations = new ArrayList<>();
     Hotel mockHotel = new Hotel();
     Bedding mockBedding = new Bedding();
@@ -142,7 +144,6 @@ class RoomServiceTest {
             .isDeleted(false)
             .build();
 
-
     when(mockRoomRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(response));
 
     Assert.assertEquals(response, roomService.delete(1L));
@@ -150,7 +151,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("delete method throwing notFoundException")
-  void deleteTestNotFoundException() {
+  void delete_NonExistingId_NotFoundExceptionThrown() {
 
     when(mockRoomRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
@@ -159,7 +160,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("replace method working properly")
-  void replaceTestOk() {
+  void replace_ExistingId_Ok() {
 
     List<Reservation> mockReservations = new ArrayList<>();
     Hotel mockHotel = new Hotel();
@@ -206,7 +207,7 @@ class RoomServiceTest {
 
   @Test
   @DisplayName("replace method throwing notFoundException")
-  void replaceTestNotFoundException() {
+  void replace_NonExistingId_NotFoundExceptionThrown() {
 
     RoomDtoInput roomDtoInput =
         RoomDtoInput.builder()
@@ -221,9 +222,10 @@ class RoomServiceTest {
 
     Assertions.assertThrows(NotFoundException.class, () -> roomService.replace(1L, roomDtoInput));
   }
+
   @Test
   @DisplayName("getAllByHotelId method working properly")
-  void getAllByHotelId() {
+  void getAllByHotelId_Empty_Ok() {
 
     List<Room> response = new ArrayList<>();
 
@@ -231,5 +233,45 @@ class RoomServiceTest {
 
     Assert.assertEquals(response, roomService.getAllByHotelId(1L));
   }
-}
 
+  @Test
+  @DisplayName("partialUpdate method working properly")
+  void partialUpdate_ExistingId_Ok() {
+
+    List<Reservation> mockReservations = new ArrayList<>();
+    Hotel mockHotel = new Hotel();
+    Bedding mockBedding = new Bedding();
+
+    Room response =
+        Room.builder()
+            .id(1L)
+            .category(Category.SUITE)
+            .bedding(mockBedding)
+            .hotel(mockHotel)
+            .status(true)
+            .dailyRate(21D)
+            .reservations(mockReservations)
+            .isDeleted(false)
+            .build();
+
+    UncheckedRoom uncheckedRoom = UncheckedRoom.builder().dailyRate(99D).build();
+
+    when(mockRoomRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(response));
+
+    when(mockRoomRepository.save(Mockito.any(Room.class))).thenReturn(response);
+
+    Assert.assertEquals(response, roomService.partialUpdate(1L, uncheckedRoom));
+  }
+
+  @Test
+  @DisplayName("partialUpdate method throwing notFoundException")
+  void partialUpdate_NonExistingId_NotFoundExceptionThrown() {
+
+    UncheckedRoom uncheckedRoom = UncheckedRoom.builder().dailyRate(99D).build();
+
+    when(mockRoomRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(
+        NotFoundException.class, () -> roomService.partialUpdate(1L, uncheckedRoom));
+  }
+}

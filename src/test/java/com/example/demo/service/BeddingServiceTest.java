@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.BeddingDtoInput;
+import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Bedding;
 import com.example.demo.model.Room;
@@ -36,7 +37,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("add method working properly")
-  void addTestOk() {
+  void add_CompleteEntity_Ok() {
 
     List<Room> mockRooms = new ArrayList<>();
 
@@ -51,15 +52,15 @@ class BeddingServiceTest {
 
     when(mockBeddingRepository.save(Mockito.any(Bedding.class))).thenReturn(response);
 
-    BeddingDto beddingDtoInput =
-        BeddingDto.builder().description("test description").maxCapacity(4).build();
+    BeddingDtoInput beddingDtoInput =
+        BeddingDtoInput.builder().description("test description").maxCapacity(4).build();
 
     Assert.assertEquals(response, beddingService.add(beddingDtoInput));
   }
 
   @Test
   @DisplayName("getAll method working properly")
-  void getAllTestOk() {
+  void getAll_Empty_Ok() {
 
     List<Bedding> response = new ArrayList<>();
 
@@ -70,7 +71,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("getById method working properly")
-  void getByIdTestOk() {
+  void getById_ExistingId_Ok() {
     List<Room> mockRooms = new ArrayList<>();
     Bedding response =
         Bedding.builder()
@@ -87,7 +88,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("getById method throwing notFoundException")
-  void getByIdTestNotFoundException() {
+  void getById_NonExistingId_NotFoundExceptionThrown() {
 
     when(mockBeddingRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
@@ -96,7 +97,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("delete method working properly")
-  void deleteTestOk() {
+  void delete_ExistingId_Ok() {
     List<Room> mockRooms = new ArrayList<>();
     Bedding response =
         Bedding.builder()
@@ -114,7 +115,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("delete method throwing notFoundException")
-  void deleteTestNotFoundException() {
+  void delete_NonExistingId_NotFoundExceptionThrown() {
 
     when(mockBeddingRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
@@ -123,7 +124,7 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("replace method working properly")
-  void replaceTestOk() {
+  void replace_ExistingId_Ok() {
 
     List<Room> mockRooms = new ArrayList<>();
 
@@ -145,8 +146,8 @@ class BeddingServiceTest {
             .rooms(mockRooms)
             .build();
 
-    BeddingDto beddingDtoInput =
-        BeddingDto.builder().description("test description").maxCapacity(4).build();
+    BeddingDtoInput beddingDtoInput =
+        BeddingDtoInput.builder().description("test description").maxCapacity(4).build();
 
     when(mockBeddingRepository.findById(Mockito.anyLong()))
         .thenReturn(Optional.of(beddingBeforeUpdate));
@@ -157,14 +158,52 @@ class BeddingServiceTest {
 
   @Test
   @DisplayName("replace method throwing notFoundException")
-  void replaceTestNotFoundException() {
+  void replace_NonExistingId_NotFoundExceptionThrown() {
 
-    BeddingDto beddingDtoInput =
-        BeddingDto.builder().description("test description").maxCapacity(4).build();
+    BeddingDtoInput beddingDtoInput =
+        BeddingDtoInput.builder().description("test description").maxCapacity(4).build();
 
     when(mockBeddingRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
     Assertions.assertThrows(
         NotFoundException.class, () -> beddingService.replace(1L, beddingDtoInput));
+  }
+
+  @Test
+  @DisplayName("partialUpdate method working properly")
+  void partialUpdate_ExistingId_Ok() {
+
+    List<Room> mockRooms = new ArrayList<>();
+
+    Bedding response =
+        Bedding.builder()
+            .id(1L)
+            .description("test description")
+            .maxCapacity(4)
+            .isDeleted(null)
+            .rooms(mockRooms)
+            .build();
+
+    UncheckedBedding uncheckedBedding =
+        UncheckedBedding.builder().description("new description testing").build();
+
+    when(mockBeddingRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(response));
+
+    when(mockBeddingRepository.save(Mockito.any(Bedding.class))).thenReturn(response);
+
+    Assert.assertEquals(response, beddingService.partialUpdate(1L, uncheckedBedding));
+  }
+
+  @Test
+  @DisplayName("partialUpdate method throwing notFoundException")
+  void partialUpdate_NonExistingId_NotFoundExceptionThrown() {
+
+    UncheckedBedding uncheckedBedding =
+        UncheckedBedding.builder().description("new description testing").build();
+
+    when(mockBeddingRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(
+        NotFoundException.class, () -> beddingService.partialUpdate(1L, uncheckedBedding));
   }
 }

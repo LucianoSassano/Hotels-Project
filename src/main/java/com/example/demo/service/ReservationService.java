@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import java.util.Optional;
 public class ReservationService {
 
   private final ReservationRepository reservationRepository;
-
   private final RoomService roomService;
   private final UserService userService;
 
@@ -40,7 +38,7 @@ public class ReservationService {
     reservation.setHotel(hotel);
     reservation.setUser(user);
 
-    return (reservationRepository.save(reservation));
+    return reservationRepository.save(reservation);
   }
 
   public List<Reservation> getAll() {
@@ -91,9 +89,7 @@ public class ReservationService {
     reservation.setHotel(hotel);
     reservation.setUser(user);
 
-    reservationRepository.save(reservation);
-
-    return reservation;
+    return reservationRepository.save(reservation);
   }
 
   public Reservation partialUpdate(Long id, UncheckedReservation uncheckedReservation) {
