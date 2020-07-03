@@ -40,7 +40,7 @@ public class StateService {
               } else throw new DuplicateEntryException(ErrorMessage.DUPLICATE_ENTRY);
             });
 
-    if (stateRepository.findStateById(estateDto.getId()).isEmpty()) {
+    if (stateRepository.findStateById(estateDto.getId()).toString().length() == 0) {
       stateRepository.save(stateToAdd);
     }
     return stateToAdd;

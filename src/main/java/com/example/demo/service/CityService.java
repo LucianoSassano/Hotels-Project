@@ -39,7 +39,7 @@ public class CityService {
                     ErrorMessage.DUPLICATE_ENTRY + "zip_code : " + cityToAdd.getZip_code());
             });
 
-    if (cityRepository.findCityByZip(cityDto.getZipCode()).isEmpty()) {
+    if (cityRepository.findCityByZip(cityDto.getZipCode()).toString().length() == 0) {
       cityRepository.save(cityToAdd);
     }
 

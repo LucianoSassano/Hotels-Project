@@ -42,7 +42,7 @@ public class CountryService {
               } else throw new DuplicateEntryException(ErrorMessage.DUPLICATE_ENTRY);
             });
 
-    if (countryRepository.findById(countryDto.getId()).isEmpty()) {
+    if (countryRepository.findById(countryDto.getId()).toString().length() == 0) {
       countryRepository.save(countryToAdd);
     }
 
