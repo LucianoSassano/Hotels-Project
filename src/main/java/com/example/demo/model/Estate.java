@@ -8,9 +8,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Data
@@ -29,12 +36,7 @@ public class Estate {
   @Column(unique = true)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "country_id")
-  private Country country;
-
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "state")
-  private List<City> cities;
+  @NotNull @PositiveOrZero private Long countryId;
 
   @NotNull private Boolean isDeleted;
 
@@ -50,7 +52,7 @@ public class Estate {
 
     return Estate.builder()
         .name(estateInputDto.getName())
-        .country(Country.builder().id(estateInputDto.getCountryId()).build())
+        .countryId(estateInputDto.getCountryId())
         .build();
   }
 }

@@ -39,7 +39,7 @@ public class CityController {
   @PutMapping(path = "{id}")
   public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityInputDto city) {
 
-    return ResponseEntity.ok().body(cityService.updateCity(id, city));
+    return ResponseEntity.ok().body(new CityOutputDto(cityService.updateCity(id, city)));
   }
 
   @DeleteMapping(path = "{id}")

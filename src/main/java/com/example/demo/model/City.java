@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Data
@@ -37,9 +39,7 @@ public class City {
   @Column(unique = true)
   private Integer zip_code;
 
-  @ManyToOne
-  @JoinColumn(name = "state_id")
-  private Estate state;
+  @NotNull @PositiveOrZero private Long stateId;
 
   @NotNull private Boolean isDeleted;
 
@@ -54,7 +54,7 @@ public class City {
   public static City buildCityEntity(CityInputDto cityDto) {
     return City.builder()
         .name(cityDto.getName())
-        .state(Estate.builder().id(cityDto.getStateId()).build())
+        .stateId(cityDto.getStateId())
         .zip_code(cityDto.getZipCode())
         .build();
   }

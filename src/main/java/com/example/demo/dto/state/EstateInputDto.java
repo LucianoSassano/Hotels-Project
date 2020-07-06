@@ -29,6 +29,6 @@ public class EstateInputDto {
   public EstateInputDto(Estate state) {
     this.id = state.getId();
     this.name = state.getName();
-    this.countryId = state.getCountry().getId();
+    this.countryId = state.getCountryId();
   }
 }

@@ -13,6 +13,9 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
   @Query(value = "SELECT * FROM country c WHERE c.id = :id ", nativeQuery = true)
   Optional<Country> findCountryById(@Param("id") Long id);
 
+  @Query(value = "SELECT * FROM country c WHERE c.name = :name ", nativeQuery = true)
+  Optional<Country> findCountryByName(@Param("name") String name);
+
   @Modifying
   @Query(value = "UPDATE country c SET is_deleted=false WHERE c.id = :id ", nativeQuery = true)
   void restoreCountryById(@Param("id") Long id);

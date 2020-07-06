@@ -16,6 +16,10 @@ import javax.validation.constraints.Size;
 public class CityInputDto {
 
   @NotNull(message = ErrorMessage.NOT_NULL)
+  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
+  private Long id;
+
+  @NotNull(message = ErrorMessage.NOT_NULL)
   @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
   private String name;
 
@@ -28,8 +32,9 @@ public class CityInputDto {
 
   public CityInputDto(City city) {
 
+    this.id = city.getId();
     this.name = city.getName();
     this.zipCode = city.getZip_code();
-    this.stateId = city.getState().getId();
+    this.stateId = city.getStateId();
   }
 }

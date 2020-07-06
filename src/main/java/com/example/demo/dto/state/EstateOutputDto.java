@@ -21,7 +21,7 @@ public class EstateOutputDto {
   public EstateOutputDto(Estate estate) {
     this.id = estate.getId();
     this.name = estate.getName();
-    this.countryId = estate.getCountry().getId();
+    this.countryId = estate.getCountryId();
     this.isDeleted = estate.getIsDeleted();
   }
 }

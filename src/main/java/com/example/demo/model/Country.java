@@ -37,9 +37,6 @@ public class Country {
   @Column(unique = true)
   private String name;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "country")
-  private List<Estate> estates;
-
   @NotNull private Boolean isDeleted;
 
   @PreUpdate

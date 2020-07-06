@@ -5,6 +5,7 @@ import com.example.demo.dto.city.CityOutputDto;
 import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.City;
+import com.example.demo.model.Country;
 import com.example.demo.repository.CityRepository;
 import com.example.demo.util.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class CityService {
                     ErrorMessage.DUPLICATE_ENTRY + "zip_code : " + cityToAdd.getZip_code());
             });
 
-    if (cityRepository.findCityByZip(cityDto.getZipCode()).toString().length() == 0) {
+    if (!cityRepository.findCityByZip(cityDto.getZipCode()).isPresent()) {
       cityRepository.save(cityToAdd);
     }
 
@@ -55,14 +56,15 @@ public class CityService {
     return cityDtoList;
   }
 
-  public CityOutputDto updateCity(Long id, CityInputDto cityDto) {
+  public City updateCity(Long id, CityInputDto cityDto) {
 
     cityRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ErrorMessage.CITY_NOT_FOUND));
     City updatedCity = City.buildCityEntity(cityDto);
-    updatedCity.setId(id);
-    return new CityOutputDto(cityRepository.save(updatedCity));
+    updatedCity.setId(cityDto.getId());
+    cityRepository.save(updatedCity);
+    return updatedCity;
   }
 
   public City getCity(Long id) {
