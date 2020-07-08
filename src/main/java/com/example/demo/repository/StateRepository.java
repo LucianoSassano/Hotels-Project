@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface StateRepository extends JpaRepository<Estate, Long> {
 
-  @Query(value = "SELECT * FROM state s WHERE s.id = :id ", nativeQuery = true)
   Optional<Estate> findStateById(@Param("id") Long id);
 
   @Modifying

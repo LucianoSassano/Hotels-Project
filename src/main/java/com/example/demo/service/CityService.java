@@ -5,7 +5,6 @@ import com.example.demo.dto.city.CityOutputDto;
 import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.City;
-import com.example.demo.model.Country;
 import com.example.demo.repository.CityRepository;
 import com.example.demo.util.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
