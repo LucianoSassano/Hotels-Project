@@ -1,5 +1,6 @@
 package com.example.demo.dto.hotel;
 
+import com.example.demo.dto.CityDto;
 import com.example.demo.dto.room.RoomDtoOutput;
 import com.example.demo.model.City;
 import com.example.demo.model.Hotel;
