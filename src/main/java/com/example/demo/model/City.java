@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.dto.CityDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.demo.dto.city.CityInputDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,17 +8,25 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE city SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE city SET is_deleted=true WHERE id = ?")
 @Where(clause = "is_deleted = false ")
 public class City {
 
@@ -29,17 +36,12 @@ public class City {
 
   private String name;
 
+  @Column(unique = true)
   private Integer zip_code;
 
-  @ManyToOne
-  @JoinColumn(name = "state_id")
-  private Estate state;
+  @NotNull @PositiveOrZero private Long stateId;
 
   @NotNull private Boolean isDeleted;
-
-  @JsonIgnore
-  @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
-  private List<Hotel> hotel;
 
   @PrePersist
   @PreUpdate
@@ -49,11 +51,10 @@ public class City {
     }
   }
 
-  public static City buildCityEntity(CityDto cityDto) {
+  public static City buildCityEntity(CityInputDto cityDto) {
     return City.builder()
         .name(cityDto.getName())
-        .id(cityDto.getId())
-        .state(cityDto.getState())
+        .stateId(cityDto.getStateId())
         .zip_code(cityDto.getZipCode())
         .build();
   }

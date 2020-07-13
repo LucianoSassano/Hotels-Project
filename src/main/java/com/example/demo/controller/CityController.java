@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CityDto;
+import com.example.demo.dto.city.CityInputDto;
+import com.example.demo.dto.city.CityOutputDto;
 import com.example.demo.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,24 +27,24 @@ public class CityController {
 
   @GetMapping(path = "{id}")
   public ResponseEntity getCityById(@PathVariable Long id) {
-    return ResponseEntity.ok(cityService.getCity(id));
+    return ResponseEntity.ok(new CityOutputDto(cityService.getCity(id)));
   }
 
   @PostMapping
-  public ResponseEntity createCity(@RequestBody CityDto cityDto) {
+  public ResponseEntity createCity(@RequestBody CityInputDto cityDto) {
 
-    return ResponseEntity.ok().body(cityService.add(cityDto));
+    return ResponseEntity.ok().body(new CityOutputDto(cityService.add(cityDto)));
   }
 
   @PutMapping(path = "{id}")
-  public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityDto city) {
+  public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityInputDto city) {
 
-    return ResponseEntity.ok().body(cityService.updateCity(id, city));
+    return ResponseEntity.ok().body(new CityOutputDto(cityService.updateCity(id, city)));
   }
 
   @DeleteMapping(path = "{id}")
   public ResponseEntity deleteCity(@PathVariable Long id) {
 
-    return ResponseEntity.ok().body(cityService.delete(id));
+    return ResponseEntity.ok().body(new CityOutputDto(cityService.delete(id)));
   }
 }

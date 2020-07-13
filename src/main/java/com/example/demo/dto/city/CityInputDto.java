@@ -1,11 +1,10 @@
-package com.example.demo.dto;
+package com.example.demo.dto.city;
 
 import com.example.demo.model.City;
-import com.example.demo.model.Estate;
 import com.example.demo.util.ErrorMessage;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -13,7 +12,8 @@ import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
-public class CityDto {
+@AllArgsConstructor
+public class CityInputDto {
 
   @NotNull(message = ErrorMessage.NOT_NULL)
   @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
@@ -28,13 +28,13 @@ public class CityDto {
   private Integer zipCode;
 
   @NotNull(message = ErrorMessage.NOT_NULL)
-  private Estate state;
+  private Long stateId;
 
-  public CityDto(City city) {
+  public CityInputDto(City city) {
 
     this.id = city.getId();
     this.name = city.getName();
     this.zipCode = city.getZip_code();
-    this.state = city.getState();
+    this.stateId = city.getStateId();
   }
 }

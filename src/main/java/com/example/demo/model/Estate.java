@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.dto.EstateDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.demo.dto.state.EstateInputDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +8,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Data
@@ -27,15 +33,10 @@ public class Estate {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(unique = true)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "country_id")
-  private Country country;
-
-  @JsonIgnore
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "state")
-  private List<City> cities;
+  @NotNull @PositiveOrZero private Long countryId;
 
   @NotNull private Boolean isDeleted;
 
@@ -47,12 +48,11 @@ public class Estate {
     }
   }
 
-  public static Estate buildEstateEntity(EstateDto estateDto) {
+  public static Estate buildEstateEntity(EstateInputDto estateInputDto) {
+
     return Estate.builder()
-        .id(estateDto.getId())
-        .name(estateDto.getName())
-        .country(estateDto.getCountry())
-        .cities(estateDto.getCities())
+        .name(estateInputDto.getName())
+        .countryId(estateInputDto.getCountryId())
         .build();
   }
 }
