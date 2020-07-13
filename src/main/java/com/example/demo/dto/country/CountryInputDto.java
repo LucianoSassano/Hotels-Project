@@ -15,10 +15,6 @@ import javax.validation.constraints.Size;
 public class CountryInputDto {
 
   @NotNull(message = ErrorMessage.NOT_NULL)
-  @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
-  private Long id;
-
-  @NotNull(message = ErrorMessage.NOT_NULL)
   @Size(max = 30, message = ErrorMessage.INVALID_STRING_SIZE)
   private String name;
 }

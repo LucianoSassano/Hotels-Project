@@ -48,6 +48,6 @@ public class Country {
   }
 
   public static Country buildCountryEntity(CountryInputDto countryDto) {
-    return Country.builder().id(countryDto.getId()).name(countryDto.getName()).build();
+    return Country.builder().name(countryDto.getName()).build();
   }
 }

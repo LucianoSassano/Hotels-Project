@@ -34,7 +34,7 @@ public class CountryService {
     Country countryToAdd = Country.buildCountryEntity(countryDto);
 
     countryRepository
-        .findCountryById(countryDto.getId())
+        .findCountryById(countryToAdd.getId())
         .ifPresent(
             country -> {
               if (country.getIsDeleted()) {
@@ -42,7 +42,7 @@ public class CountryService {
               } else throw new DuplicateEntryException(ErrorMessage.DUPLICATE_ENTRY);
             });
 
-    if (!countryRepository.findCountryById(countryDto.getId()).isPresent()) {
+    if (!countryRepository.findCountryById(countryToAdd.getId()).isPresent()) {
       countryRepository.save(countryToAdd);
     }
 

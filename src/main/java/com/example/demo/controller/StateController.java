@@ -36,7 +36,7 @@ public class StateController {
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.updateState(id, estateDto)));
   }
 
-  @DeleteMapping(path = "/{id}")
+  @DeleteMapping(path = "{id}")
   public ResponseEntity deleteState(@PathVariable Long id) {
 
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.delete(id)));
