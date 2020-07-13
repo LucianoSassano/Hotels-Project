@@ -19,7 +19,7 @@ public class StateController {
     return ResponseEntity.ok().body(stateService.listAllStates());
   }
 
-  @GetMapping(path = "{id}")
+  @GetMapping(path = "/{id}")
   public ResponseEntity getStateById(@PathVariable Long id) {
 
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.getById(id)));
@@ -30,13 +30,13 @@ public class StateController {
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.add(estateDto)));
   }
 
-  @PutMapping(path = "{id}")
+  @PutMapping(path = "/{id}")
   public ResponseEntity updateState(@PathVariable Long id, @RequestBody EstateInputDto estateDto) {
 
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.updateState(id, estateDto)));
   }
 
-  @DeleteMapping(path = "{id}")
+  @DeleteMapping(path = "/{id}")
   public ResponseEntity deleteState(@PathVariable Long id) {
 
     return ResponseEntity.ok().body(new EstateOutputDto(stateService.delete(id)));

@@ -25,7 +25,7 @@ public class CityController {
     return ResponseEntity.ok(cityService.listAllCities());
   }
 
-  @GetMapping(path = "{id}")
+  @GetMapping(path = "/{id}")
   public ResponseEntity getCityById(@PathVariable Long id) {
     return ResponseEntity.ok(new CityOutputDto(cityService.getCity(id)));
   }
@@ -36,13 +36,13 @@ public class CityController {
     return ResponseEntity.ok().body(new CityOutputDto(cityService.add(cityDto)));
   }
 
-  @PutMapping(path = "{id}")
+  @PutMapping(path = "/{id}")
   public ResponseEntity updateCity(@PathVariable Long id, @RequestBody CityInputDto city) {
 
     return ResponseEntity.ok().body(new CityOutputDto(cityService.updateCity(id, city)));
   }
 
-  @DeleteMapping(path = "{id}")
+  @DeleteMapping(path = "/{id}")
   public ResponseEntity deleteCity(@PathVariable Long id) {
 
     return ResponseEntity.ok().body(new CityOutputDto(cityService.delete(id)));
