@@ -20,10 +20,10 @@ public class CreditCardService {
     return CardsUtils.convertToListDTO(creditCardRepository.findAll());
   }
 
-  public CreditCard insert(CardDTO toInsert, Long id) {
+  public CardDTO insert(CardDTO toInsert, Long id) {
     CreditCard toSave = CreditCard.generateInstanceFromDTO(toInsert);
     toSave.setUserId(id);
-    return creditCardRepository.save(toSave);
+    return CardDTO.generateInstanceFromEntity(creditCardRepository.save(toSave));
   }
 
   public CardDTO findById(Long id) {
