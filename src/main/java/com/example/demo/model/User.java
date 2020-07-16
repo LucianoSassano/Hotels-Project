@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.UserDTO;
-import com.example.demo.dto.UserDtoInsert;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,9 +19,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -45,10 +43,6 @@ public class User {
 
   private String name;
   private String address;
-
-  @NotNull
-  @NotBlank
-  private String password;
 
   @Column(unique = true, updatable = false)
   private Integer dni;
@@ -84,15 +78,4 @@ public class User {
         .rol(adn.getRol())
         .build();
   }
-    public static User generateInstanceFromDtoInsert(UserDtoInsert adn) {
-        return User.builder()
-                .address(adn.getAddress())
-                .email(adn.getEmail())
-                .password(adn.getPassword())
-                .dni(adn.getDni())
-                .name(adn.getName())
-                .phone(adn.getPhone())
-                .rol(adn.getRol())
-                .build();
-    }
 }
