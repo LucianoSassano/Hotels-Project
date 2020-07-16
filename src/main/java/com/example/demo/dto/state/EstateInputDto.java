@@ -1,25 +1,19 @@
-package com.example.demo.dto;
+package com.example.demo.dto.state;
 
-import com.example.demo.model.City;
-import com.example.demo.model.Country;
 import com.example.demo.model.Estate;
 import com.example.demo.util.ErrorMessage;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstateDto {
+public class EstateInputDto {
 
   @NotNull(message = ErrorMessage.NOT_NULL)
   @PositiveOrZero(message = ErrorMessage.NOT_POSITIVE)
@@ -30,17 +24,11 @@ public class EstateDto {
   private String name;
 
   @NotNull(message = ErrorMessage.NOT_NULL)
-  private Country country;
+  private Long countryId;
 
-  @JsonIgnore
-  @NotNull(message = ErrorMessage.NOT_NULL)
-  @NotEmpty(message = ErrorMessage.EMPTY_COLLECTION)
-  private List<City> cities;
-
-  public EstateDto(Estate state) {
+  public EstateInputDto(Estate state) {
     this.id = state.getId();
     this.name = state.getName();
-    this.country = state.getCountry();
-    this.cities = state.getCities();
+    this.countryId = state.getCountryId();
   }
 }
