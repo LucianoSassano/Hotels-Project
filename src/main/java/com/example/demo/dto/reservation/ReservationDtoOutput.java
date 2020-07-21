@@ -18,6 +18,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ReservationDtoOutput {
 
+  private Long id;
+
   private RoomDtoOutput room;
 
   private UserDTO user;
@@ -31,6 +33,7 @@ public class ReservationDtoOutput {
   private Boolean isPaid;
 
   public ReservationDtoOutput(Reservation reservation) {
+    this.id = reservation.getId();
     this.room = new RoomDtoOutput(reservation.getRoom());
     this.user = UserDTO.generateInstanceFromUser(reservation.getUser());
     this.checkIn = reservation.getCheckIn();

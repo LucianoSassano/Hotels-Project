@@ -1,6 +1,6 @@
 package com.example.demo.dto.room;
 
-import com.example.demo.dto.bedding.BeddingDto;
+import com.example.demo.dto.bedding.BeddingDtoOutput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
 import com.example.demo.model.Category;
 import com.example.demo.model.Room;
@@ -17,9 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoomDtoOutput {
 
+  private Long id;
+
   private Category category;
 
-  private BeddingDto bedding;
+  private BeddingDtoOutput bedding;
 
   @JsonManagedReference private HotelDtoOutput hotel;
 
@@ -28,8 +30,9 @@ public class RoomDtoOutput {
   private Double dailyRate;
 
   public RoomDtoOutput(Room room) {
+    this.id = room.getId();
     this.category = room.getCategory();
-    this.bedding = new BeddingDto(room.getBedding());
+    this.bedding = new BeddingDtoOutput(room.getBedding());
     this.hotel = new HotelDtoOutput(room.getHotel());
     this.status = room.getStatus();
     this.dailyRate = room.getDailyRate();
