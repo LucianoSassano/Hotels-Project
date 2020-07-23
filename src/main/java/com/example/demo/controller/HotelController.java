@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.hotel.HotelDtoCreated;
 import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.HotelDtoOutput;
 import com.example.demo.dto.hotel.UncheckedHotel;
 import com.example.demo.service.HotelService;
 import com.example.demo.util.HotelUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,8 @@ public class HotelController {
 
   @PostMapping
   public ResponseEntity<HotelDtoOutput> add(@Valid @RequestBody HotelDtoInput hotelDtoInput) {
-    return ResponseEntity.ok(new HotelDtoOutput(hotelService.add(hotelDtoInput)));
+    return new ResponseEntity(
+        new HotelDtoCreated(hotelService.add(hotelDtoInput)), HttpStatus.CREATED);
   }
 
   @GetMapping
@@ -43,19 +46,19 @@ public class HotelController {
   }
 
   @PutMapping(path = "/{id}")
-  public ResponseEntity<HotelDtoOutput> replace(
+  public ResponseEntity<HotelDtoCreated> replace(
       @PathVariable Long id, @Valid @RequestBody HotelDtoInput hotelDtoInput) {
-    return ResponseEntity.ok(new HotelDtoOutput(hotelService.replace(id, hotelDtoInput)));
+    return ResponseEntity.ok(new HotelDtoCreated(hotelService.replace(id, hotelDtoInput)));
   }
 
   @DeleteMapping(path = "/{id}")
-  public ResponseEntity<HotelDtoOutput> delete(@PathVariable Long id) {
-    return ResponseEntity.ok(new HotelDtoOutput(hotelService.delete(id)));
+  public ResponseEntity<HotelDtoCreated> delete(@PathVariable Long id) {
+    return ResponseEntity.ok(new HotelDtoCreated(hotelService.delete(id)));
   }
 
   @PatchMapping(path = "/{id}")
-  public ResponseEntity<HotelDtoOutput> partialUpdate(
+  public ResponseEntity<HotelDtoCreated> partialUpdate(
       @PathVariable Long id, @Valid @RequestBody UncheckedHotel uncheckedHotel) {
-    return ResponseEntity.ok(new HotelDtoOutput(hotelService.partialUpdate(id, uncheckedHotel)));
+    return ResponseEntity.ok(new HotelDtoCreated(hotelService.partialUpdate(id, uncheckedHotel)));
   }
 }

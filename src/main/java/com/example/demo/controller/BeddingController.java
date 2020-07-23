@@ -6,6 +6,7 @@ import com.example.demo.dto.bedding.UncheckedBedding;
 import com.example.demo.service.BeddingService;
 import com.example.demo.util.BeddingUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,8 @@ public class BeddingController {
 
   @PostMapping
   public ResponseEntity<BeddingDtoOutput> add(@Valid @RequestBody BeddingDtoInput beddingDtoInput) {
-    return ResponseEntity.ok(new BeddingDtoOutput(beddingService.add(beddingDtoInput)));
+    return new ResponseEntity<>(
+        new BeddingDtoOutput(beddingService.add(beddingDtoInput)), HttpStatus.CREATED);
   }
 
   @GetMapping

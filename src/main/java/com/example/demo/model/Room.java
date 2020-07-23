@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.room.RoomDtoInput;
+import com.example.demo.dto.room.UncheckedRoom;
+import com.example.demo.model.common.CustomDbUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +36,7 @@ import java.util.List;
 @Builder
 @SQLDelete(sql = "UPDATE rooms SET is_deleted = true WHERE room_id=?")
 @Where(clause = "is_deleted = false")
-public class Room {
+public class Room implements CustomDbUtils {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,12 +61,11 @@ public class Room {
   @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
 
-  @NotNull private Boolean isDeleted;
+  @NotNull protected Boolean isDeleted;
 
   @PrePersist
   @PreUpdate
-  void preInsert() {
-
+  protected void preInsert() {
     if (this.isDeleted == null) this.isDeleted = false;
   }
 
@@ -77,5 +78,11 @@ public class Room {
         .status(roomDtoInput.getStatus())
         .dailyRate(roomDtoInput.getDailyRate())
         .build();
+  }
+
+  public void update(UncheckedRoom dtoPatch) {
+    setIfNotNull(this::setCategory, dtoPatch.getCategory());
+    setIfNotNull(this::setDailyRate, dtoPatch.getDailyRate());
+    setIfNotNull(this::setStatus, dtoPatch.getStatus());
   }
 }

@@ -2,6 +2,7 @@ package com.example.demo.dto.reservation;
 
 import com.example.demo.util.Constants;
 import com.example.demo.util.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
@@ -27,13 +29,11 @@ public class ReservationDtoInput {
   @Positive(message = ErrorMessage.NOT_NEGATIVE)
   private Long userId;
 
-  @NotBlank(message = ErrorMessage.NOT_BLANK)
-  @Pattern(message = ErrorMessage.INVALID_DATE_FORMAT, regexp = Constants.DATE_VALIDATION_REGEX)
-  private String checkIn;
+  @JsonFormat(pattern = Constants.DATE_PATTERN)
+  private LocalDate checkIn;
 
-  @NotBlank(message = ErrorMessage.NOT_BLANK)
-  @Pattern(message = ErrorMessage.INVALID_DATE_FORMAT, regexp = Constants.DATE_VALIDATION_REGEX)
-  private String checkOut;
+  @JsonFormat(pattern = Constants.DATE_PATTERN)
+  private LocalDate checkOut;
 
   @NotNull(message = ErrorMessage.NOT_NULL)
   @Positive(message = ErrorMessage.NOT_NEGATIVE)

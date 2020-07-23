@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.bedding.BeddingDtoInput;
+import com.example.demo.dto.bedding.UncheckedBedding;
+import com.example.demo.model.common.CustomDbUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,15 +23,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Entity
 @Table(name = "beddings")
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @SQLDelete(sql = "UPDATE beddings SET is_deleted = true WHERE bedding_id=?")
 @Where(clause = "is_deleted = false")
-public class Bedding {
+public class Bedding implements CustomDbUtils {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,11 +45,11 @@ public class Bedding {
 
   private Integer maxCapacity;
 
-  @NotNull private Boolean isDeleted;
+  @NotNull protected Boolean isDeleted;
 
   @PrePersist
   @PreUpdate
-  void preInsert() {
+  protected void preInsert() {
     if (this.isDeleted == null) this.isDeleted = false;
   }
 
@@ -57,5 +59,10 @@ public class Bedding {
         .description(beddingDtoInput.getDescription())
         .maxCapacity(beddingDtoInput.getMaxCapacity())
         .build();
+  }
+
+  public void update(UncheckedBedding dtoPatch) {
+    setIfNotNull(this::setDescription, dtoPatch.getDescription());
+    setIfNotNull(this::setMaxCapacity, dtoPatch.getMaxCapacity());
   }
 }

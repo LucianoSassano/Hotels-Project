@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,16 +55,13 @@ public class BeddingService {
   }
 
   public Bedding partialUpdate(Long id, UncheckedBedding uncheckedBedding) {
-    Bedding beddingToUpdate =
+    Bedding bedding =
         beddingRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException(ErrorMessage.BEDDING_NOT_FOUND));
 
-    Optional.ofNullable(uncheckedBedding.getDescription())
-        .ifPresent(beddingToUpdate::setDescription);
-    Optional.ofNullable(uncheckedBedding.getMaxCapacity())
-        .ifPresent(beddingToUpdate::setMaxCapacity);
+    bedding.update(uncheckedBedding);
 
-    return beddingRepository.save(beddingToUpdate);
+    return beddingRepository.save(bedding);
   }
 }

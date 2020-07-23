@@ -1,9 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.reservation.ReservationDtoInput;
-
-import com.example.demo.util.Constants;
-import com.example.demo.util.SharedUtils;
+import com.example.demo.dto.reservation.UncheckedReservation;
+import com.example.demo.model.common.CustomDbUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "reservations")
@@ -36,7 +34,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @SQLDelete(sql = "UPDATE reservations SET is_deleted = true WHERE reservation_id=?")
 @Where(clause = "is_deleted = false")
-public class Reservation {
+public class Reservation implements CustomDbUtils {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,11 +67,11 @@ public class Reservation {
 
   private Boolean isPaid;
 
-  @NotNull private Boolean isDeleted;
+  @NotNull protected Boolean isDeleted;
 
   @PrePersist
   @PreUpdate
-  void preInsert() {
+  protected void preInsert() {
     if (this.isDeleted == null) this.isDeleted = false;
   }
 
@@ -81,16 +79,17 @@ public class Reservation {
     return Reservation.builder()
         .room(Room.builder().id(reservationDtoInput.getRoomId()).build())
         .user(User.builder().id(reservationDtoInput.getUserId()).build())
-        .checkIn(
-            LocalDate.parse(
-                SharedUtils.adjustLocalDate(reservationDtoInput.getCheckIn()),
-                DateTimeFormatter.ofPattern(Constants.DATE_PATTERN)))
-        .checkOut(
-            LocalDate.parse(
-                SharedUtils.adjustLocalDate(reservationDtoInput.getCheckOut()),
-                DateTimeFormatter.ofPattern(Constants.DATE_PATTERN)))
+        .checkIn(reservationDtoInput.getCheckIn())
+        .checkOut(reservationDtoInput.getCheckOut())
         .finalPrice(reservationDtoInput.getFinalPrice())
         .isPaid(reservationDtoInput.getIsPaid())
         .build();
+  }
+
+  public void update(UncheckedReservation dtoPatch) {
+    setIfNotNull(this::setCheckIn, dtoPatch.getCheckIn());
+    setIfNotNull(this::setCheckOut, dtoPatch.getCheckOut());
+    setIfNotNull(this::setFinalPrice, dtoPatch.getFinalPrice());
+    setIfNotNull(this::setIsPaid, dtoPatch.getIsPaid());
   }
 }

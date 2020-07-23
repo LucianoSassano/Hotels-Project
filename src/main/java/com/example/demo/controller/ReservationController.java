@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.reservation.ReservationDtoCreated;
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.ReservationDtoOutput;
 import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.service.ReservationService;
 import com.example.demo.util.ReservationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,8 @@ public class ReservationController {
   @PostMapping
   public ResponseEntity<ReservationDtoOutput> add(
       @Valid @RequestBody ReservationDtoInput reservationDtoInput) {
-    return ResponseEntity.ok(new ReservationDtoOutput(reservationService.add(reservationDtoInput)));
+    return new ResponseEntity(
+        new ReservationDtoCreated(reservationService.add(reservationDtoInput)), HttpStatus.CREATED);
   }
 
   @GetMapping
@@ -56,21 +59,21 @@ public class ReservationController {
   }
 
   @PutMapping(path = "/{id}")
-  public ResponseEntity<ReservationDtoOutput> replace(
+  public ResponseEntity<ReservationDtoCreated> replace(
       @PathVariable Long id, @Valid @RequestBody ReservationDtoInput reservationDtoInput) {
     return ResponseEntity.ok(
-        new ReservationDtoOutput(reservationService.replace(id, reservationDtoInput)));
+        new ReservationDtoCreated(reservationService.replace(id, reservationDtoInput)));
   }
 
   @DeleteMapping(path = "/{id}")
-  public ResponseEntity<ReservationDtoOutput> delete(@PathVariable Long id) {
-    return ResponseEntity.ok(new ReservationDtoOutput(reservationService.delete(id)));
+  public ResponseEntity<ReservationDtoCreated> delete(@PathVariable Long id) {
+    return ResponseEntity.ok(new ReservationDtoCreated(reservationService.delete(id)));
   }
 
   @PatchMapping(path = "/{id}")
-  public ResponseEntity<ReservationDtoOutput> partialUpdate(
+  public ResponseEntity<ReservationDtoCreated> partialUpdate(
       @PathVariable Long id, @Valid @RequestBody UncheckedReservation uncheckedReservation) {
     return ResponseEntity.ok(
-        new ReservationDtoOutput(reservationService.partialUpdate(id, uncheckedReservation)));
+        new ReservationDtoCreated(reservationService.partialUpdate(id, uncheckedReservation)));
   }
 }
