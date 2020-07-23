@@ -3,21 +3,12 @@ package com.example.demo.service;
 import com.example.demo.dto.reservation.ReservationDtoInput;
 import com.example.demo.dto.reservation.UncheckedReservation;
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.Hotel;
 import com.example.demo.model.Reservation;
-import com.example.demo.model.Room;
-import com.example.demo.model.User;
 import com.example.demo.repository.ReservationRepository;
-
-import com.example.demo.util.Constants;
 import com.example.demo.util.ErrorMessage;
-import com.example.demo.util.SharedUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,17 +21,16 @@ public class ReservationService {
   private final RoomService roomService;
   private final UserService userService;
 
+  public void checkExistenceOfAdjacentObjects(Long roomId, Long userId) {
+    roomService.getById(roomId);
+    userService.findById(userId);
+  }
+
   public Reservation add(ReservationDtoInput reservationDtoInput) {
+    checkExistenceOfAdjacentObjects(
+        reservationDtoInput.getRoomId(), reservationDtoInput.getUserId());
 
-    Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-    Room room = roomService.getById(reservationDtoInput.getRoomId());
-    Hotel hotel = room.getHotel();
-    User user = userService.findById(reservationDtoInput.getUserId());
-    reservation.setRoom(room);
-    reservation.setHotel(hotel);
-    reservation.setUser(user);
-
-    return (reservationRepository.save(reservation));
+    return (reservationRepository.save(Reservation.buildReservationEntity(reservationDtoInput)));
   }
 
   public List<Reservation> getAll() {
@@ -81,54 +71,31 @@ public class ReservationService {
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
-    Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
-    Room room = roomService.getById(reservationDtoInput.getRoomId());
-    Hotel hotel = room.getHotel();
-    User user = userService.findById(reservationDtoInput.getUserId());
+    checkExistenceOfAdjacentObjects(
+        reservationDtoInput.getRoomId(), reservationDtoInput.getUserId());
 
+    Reservation reservation = Reservation.buildReservationEntity(reservationDtoInput);
     reservation.setId(id);
-    reservation.setRoom(room);
-    reservation.setHotel(hotel);
-    reservation.setUser(user);
 
     reservationRepository.save(reservation);
 
     return reservation;
   }
 
-  public Reservation partialUpdate(Long id, UncheckedReservation uncheckedReservation) {
-    Reservation reservationToUpdate =
+  public Reservation partialUpdate(Long id, UncheckedReservation patchDto) {
+    Reservation reservation =
         reservationRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException(ErrorMessage.RESERVATION_NOT_FOUND));
 
-    Optional.ofNullable(uncheckedReservation.getRoomId())
-        .ifPresent(
-            roomId -> {
-              reservationToUpdate.setRoom(roomService.getById(roomId));
-              reservationToUpdate.setHotel(reservationToUpdate.getRoom().getHotel());
-            });
+    reservation.update(patchDto);
 
-    Optional.ofNullable(uncheckedReservation.getUserId())
-        .ifPresent(userId -> reservationToUpdate.setUser(userService.findById(userId)));
-    Optional.ofNullable(uncheckedReservation.getCheckIn())
-        .ifPresent(
-            checkin ->
-                reservationToUpdate.setCheckIn(
-                    LocalDate.parse(
-                        SharedUtils.adjustLocalDate(checkin),
-                        DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
-    Optional.ofNullable(uncheckedReservation.getCheckOut())
-        .ifPresent(
-            checkOut ->
-                reservationToUpdate.setCheckOut(
-                    LocalDate.parse(
-                        SharedUtils.adjustLocalDate(checkOut),
-                        DateTimeFormatter.ofPattern(Constants.DATE_PATTERN))));
-    Optional.ofNullable(uncheckedReservation.getFinalPrice())
-        .ifPresent(reservationToUpdate::setFinalPrice);
-    Optional.ofNullable(uncheckedReservation.getIsPaid()).ifPresent(reservationToUpdate::setIsPaid);
+    Optional.ofNullable(patchDto.getRoomId())
+        .ifPresent(roomId -> reservation.setRoom(roomService.getById(roomId)));
 
-    return reservationRepository.save(reservationToUpdate);
+    Optional.ofNullable(patchDto.getUserId())
+        .ifPresent(userId -> reservation.setUser(userService.findById(userId)));
+
+    return reservationRepository.save(reservation);
   }
 }

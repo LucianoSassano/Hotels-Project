@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.hotel.HotelDtoInput;
+import com.example.demo.dto.hotel.UncheckedHotel;
+import com.example.demo.model.common.CustomDbUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +33,7 @@ import java.util.List;
 @Builder
 @SQLDelete(sql = "UPDATE hotels SET is_deleted = true WHERE hotel_id=?")
 @Where(clause = "is_deleted = false")
-public class Hotel {
+public class Hotel implements CustomDbUtils {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,11 +63,11 @@ public class Hotel {
   @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
 
-  @NotNull private Boolean isDeleted;
+  @NotNull protected Boolean isDeleted;
 
   @PrePersist
   @PreUpdate
-  void preInsert() {
+  protected void preInsert() {
     if (this.isDeleted == null) this.isDeleted = false;
   }
 
@@ -79,5 +81,14 @@ public class Hotel {
         .roomCapacity(hotelDtoInput.getRoomCapacity())
         .rating(hotelDtoInput.getRating())
         .build();
+  }
+
+  public void update(UncheckedHotel dtoPatch) {
+    setIfNotNull(this::setName, dtoPatch.getName());
+    setIfNotNull(this::setAddress, dtoPatch.getAddress());
+    setIfNotNull(this::setEmail, dtoPatch.getEmail());
+    setIfNotNull(this::setPhone, dtoPatch.getPhone());
+    setIfNotNull(this::setRating, dtoPatch.getRating());
+    setIfNotNull(this::setRoomCapacity, dtoPatch.getRoomCapacity());
   }
 }

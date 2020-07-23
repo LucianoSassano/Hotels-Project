@@ -4,7 +4,6 @@ import com.example.demo.dto.hotel.HotelDtoInput;
 import com.example.demo.dto.hotel.UncheckedHotel;
 import com.example.demo.exception.DuplicateEntryException;
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.City;
 import com.example.demo.model.Hotel;
 import com.example.demo.repository.HotelRepository;
 import com.example.demo.util.ErrorMessage;
@@ -22,11 +21,16 @@ public class HotelService {
   private final HotelRepository hotelRepository;
   private final CityService cityService;
 
+  public void checkExistenceOfAdjacentObjects(Long cityId) {
+    cityService.getCity(cityId);
+  }
+
   @Transactional
   public Hotel add(HotelDtoInput hotelDtoInput) {
+
+    checkExistenceOfAdjacentObjects(hotelDtoInput.getCityId());
+
     Hotel hotelToAdd = Hotel.buildHotelEntity(hotelDtoInput);
-    City city = cityService.getCity(hotelDtoInput.getCityId());
-    hotelToAdd.setCity(city);
     hotelRepository
         .findHotelByEmail(hotelDtoInput.getEmail())
         .ifPresent(
@@ -64,16 +68,13 @@ public class HotelService {
   }
 
   public Hotel replace(Long id, HotelDtoInput hotelDtoInput) {
-
     hotelRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
 
+    checkExistenceOfAdjacentObjects(hotelDtoInput.getCityId());
+
     Hotel updatedHotel = Hotel.buildHotelEntity(hotelDtoInput);
-
-    City city = cityService.getCity(hotelDtoInput.getCityId());
-
-    updatedHotel.setCity(city);
     updatedHotel.setId(id);
 
     return hotelRepository.save(updatedHotel);
@@ -85,12 +86,8 @@ public class HotelService {
             .findById(id)
             .orElseThrow(() -> new NotFoundException(ErrorMessage.HOTEL_NOT_FOUND));
 
-    Optional.ofNullable(uncheckedHotel.getAddress()).ifPresent(hotelToUpdate::setAddress);
-    Optional.ofNullable(uncheckedHotel.getEmail()).ifPresent(hotelToUpdate::setEmail);
-    Optional.ofNullable(uncheckedHotel.getName()).ifPresent(hotelToUpdate::setName);
-    Optional.ofNullable(uncheckedHotel.getPhone()).ifPresent(hotelToUpdate::setPhone);
-    Optional.ofNullable(uncheckedHotel.getRating()).ifPresent(hotelToUpdate::setRating);
-    Optional.ofNullable(uncheckedHotel.getRoomCapacity()).ifPresent(hotelToUpdate::setRoomCapacity);
+    hotelToUpdate.update(uncheckedHotel);
+
     Optional.ofNullable(uncheckedHotel.getCityId())
         .ifPresent(cityId -> hotelToUpdate.setCity(cityService.getCity(cityId)));
 

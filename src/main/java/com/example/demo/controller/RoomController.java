@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.room.RoomDtoCreated;
 import com.example.demo.dto.room.RoomDtoInput;
 import com.example.demo.dto.room.RoomDtoOutput;
 import com.example.demo.dto.room.UncheckedRoom;
 import com.example.demo.service.RoomService;
 import com.example.demo.util.RoomUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +30,10 @@ public class RoomController {
   private final RoomService roomService;
 
   @PostMapping
-  public ResponseEntity<RoomDtoOutput> add(@Valid @RequestBody RoomDtoInput roomDtoInput) {
-    return ResponseEntity.ok(new RoomDtoOutput(roomService.add(roomDtoInput)));
+  public ResponseEntity<RoomDtoCreated> add(@Valid @RequestBody RoomDtoInput roomDtoInput) {
+
+    return new ResponseEntity<>(
+        new RoomDtoCreated(roomService.add(roomDtoInput)), HttpStatus.CREATED);
   }
 
   @GetMapping
@@ -39,6 +43,7 @@ public class RoomController {
 
   @GetMapping(path = "/{id}")
   public ResponseEntity<RoomDtoOutput> selectById(@PathVariable Long id) {
+
     return ResponseEntity.ok(new RoomDtoOutput(roomService.getById(id)));
   }
 
@@ -48,19 +53,19 @@ public class RoomController {
   }
 
   @PutMapping(path = "/{id}")
-  public ResponseEntity<RoomDtoOutput> replace(
+  public ResponseEntity<RoomDtoCreated> replace(
       @PathVariable Long id, @Valid @RequestBody RoomDtoInput roomDtoInput) {
-    return ResponseEntity.ok(new RoomDtoOutput(roomService.replace(id, roomDtoInput)));
+    return ResponseEntity.ok(new RoomDtoCreated(roomService.replace(id, roomDtoInput)));
   }
 
   @DeleteMapping(path = "/{id}")
-  public ResponseEntity<RoomDtoOutput> delete(@PathVariable Long id) {
-    return ResponseEntity.ok(new RoomDtoOutput(roomService.delete(id)));
+  public ResponseEntity<RoomDtoCreated> delete(@PathVariable Long id) {
+    return ResponseEntity.ok(new RoomDtoCreated(roomService.delete(id)));
   }
 
   @PatchMapping(path = "/{id}")
-  public ResponseEntity<RoomDtoOutput> partialUpdate(
+  public ResponseEntity<RoomDtoCreated> partialUpdate(
       @PathVariable Long id, @Valid @RequestBody UncheckedRoom uncheckedRoom) {
-    return ResponseEntity.ok(new RoomDtoOutput(roomService.partialUpdate(id, uncheckedRoom)));
+    return ResponseEntity.ok(new RoomDtoCreated(roomService.partialUpdate(id, uncheckedRoom)));
   }
 }
